@@ -61,10 +61,14 @@ function signIn($email, $password)
         $user_pass = pg_fetch_result($user, 0, "Password");
 
         if ($email == $user_email && password_verify($password, $user_pass)) {
-            $_SESSION["current_user"] = $user_email;
-
             $user_fname = pg_fetch_result($user, 0, "FirstName");
             $user_lname = pg_fetch_result($user, 0, "LastName");
+            $user_type = pg_fetch_result($user, 0, "Type");
+
+            $_SESSION["current_user"] = $user_email;
+            $_SESSION["user_fname"] = $user_fname;
+            $_SESSION["user_lname"] = $user_lname;
+            $_SESSION["user_type"] = $user_type;
 
             setMessage("Welcome " . $user_fname . " " . $user_lname);
             logSignIn($email, true);
@@ -101,4 +105,31 @@ function logSignOut($email)
     $file = fopen($file_name, "a");
     fwrite($file, $message);
     fclose($file);
+}
+
+function displayForm($form)
+{
+    $self = $_SERVER['PHP_SELF'];
+    $formFinal = "<form action=\"$self\" method=\"POST\" class=\"form-signin\">";
+    if (isset($form['prepended'])) {
+        $formFinal .= $form['prepended'];
+    }
+
+    foreach ($form as $element) {
+        $type = isset($element['type']) ? $element['type'] : "";
+        $name = isset($element['name']) ? $element['name'] : "";
+        $value = isset($element['value']) ? $element['value'] : "";
+        $label = isset($element['label']) ? $element['label'] : "";
+        $class = isset($element['class']) ? $element['class'] : "";
+        $other = isset($element['other']) ? $element['other'] : "";
+
+        if ($type != "") {
+            $formFinal .= "<input type=\"$type\" name=\"$name\" value=\"$value\" class=\"$class\" placeholder=\"$label\" $other/>\n";
+        }
+    }
+    if (isset($form['appended'])) {
+        $formFinal .= $form['appended'];
+    }
+    $formFinal .= "</form> \n";
+    return $formFinal;
 }

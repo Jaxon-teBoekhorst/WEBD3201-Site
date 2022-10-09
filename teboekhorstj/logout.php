@@ -11,7 +11,7 @@ $date = "25 September 2022";
 $file = "./logout.php";
 $desc = "Log a user out and redirect to sign-in.php";
 
-require("./includes/header.php");
+require_once("./includes/header.php");
 
 // save email for later use
 $email = $_SESSION["current_user"];

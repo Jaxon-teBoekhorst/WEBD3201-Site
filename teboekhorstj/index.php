@@ -11,7 +11,7 @@ $date = "13 September 2022";
 $file = "./index.php";
 $desc = "Homepage for my website";
 
-require "./includes/header.php";
+require_once("./includes/header.php");
 ?>
 
 <h1 class="cover-heading">Welcome!</h1>

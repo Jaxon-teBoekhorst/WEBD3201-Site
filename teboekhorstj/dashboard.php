@@ -11,7 +11,7 @@ $date = "13 September 2022";
 $file = "./dashboard.php";
 $desc = "Display a users dashboard";
 
-require "./includes/header.php";
+require_once("./includes/header.php");
 
 if (!isLoggedIn()) {
     redirect("./sign-in.php");
@@ -28,7 +28,6 @@ if (!isLoggedIn()) {
         <span data-feather="calendar"></span>
         This week
     </button>
-</div>
 </div>
 
 <h2>Section title</h2>
