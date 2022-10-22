@@ -10,6 +10,7 @@ $author = "Jaxon teBoekhorst";
 $date = "13 September 2022";
 $file = "./sign-in.php";
 $desc = "User sign in";
+
 require_once("./includes/header.php");
 
 if (isLoggedIn()) {
@@ -43,7 +44,7 @@ echo displayForm(
             "other" => "required autofocus"
         ],
         [
-            "type" => "pasword",
+            "type" => "password",
             "name" => "inputPassword",
             "value" => "",
             "label" => "Password",
@@ -56,8 +57,4 @@ echo displayForm(
     ]
 );
 
-?>
-
-
-<?php
 require "./includes/footer.php";

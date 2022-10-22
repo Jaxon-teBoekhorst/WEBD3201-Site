@@ -25,7 +25,7 @@ function getMessage()
 }
 
 // check if there is a message to display
-function isMessage()
+function isMessage(): bool
 {
     return isset($_SESSION['message']);
 }
@@ -45,7 +45,7 @@ function flashMessage()
 }
 
 // check if any user is logged in
-function isLoggedIn()
+function isLoggedIn(): bool
 {
     return !$_SESSION["current_user"] == "";
 }
@@ -64,13 +64,16 @@ function signIn($email, $password)
             $user_fname = pg_fetch_result($user, 0, "FirstName");
             $user_lname = pg_fetch_result($user, 0, "LastName");
             $user_type = pg_fetch_result($user, 0, "Type");
+            $user_id = pg_fetch_result($user, 0, "Id");
 
             $_SESSION["current_user"] = $user_email;
             $_SESSION["user_fname"] = $user_fname;
             $_SESSION["user_lname"] = $user_lname;
             $_SESSION["user_type"] = $user_type;
+            $_SESSION["user_id"] = $user_id;
 
             setMessage("Welcome " . $user_fname . " " . $user_lname);
+			update_accessed($user_id);
             logSignIn($email, true);
             redirect("./dashboard.php");
         } else {
@@ -89,7 +92,7 @@ function logSignIn($email, $success)
 {
     $file_name = "./logs/" . date("Ymd") . "_log.txt";
     $message = $success ?
-        "Sign in success at " . date("h:ia") . ". User " . $email . " sign in. \n" :
+        "Sign in success at " . date("h:ia") . ". User " . $email . "\n" :
         "Sign in failed at " . date("h:ia") . ". Email provided " . $email . "\n";
 
     $file = fopen($file_name, "a");
@@ -100,28 +103,28 @@ function logSignIn($email, $success)
 function logSignOut($email)
 {
     $file_name = "./logs/" . date("Ymd") . "_log.txt";
-    $message = $email . "succcessfully signed out at " . date("h:ia") . "\n";
+    $message = $email . "successfully signed out at " . date("h:ia") . "\n";
 
     $file = fopen($file_name, "a");
     fwrite($file, $message);
     fclose($file);
 }
 
-function displayForm($form)
+function displayForm($form): string
 {
     $self = $_SERVER['PHP_SELF'];
-    $formFinal = "<form action=\"$self\" method=\"POST\" class=\"form-signin\">";
+    $formFinal = "<form action='$self' method='POST' class='form-signin align-content-center'>";
     if (isset($form['prepended'])) {
         $formFinal .= $form['prepended'];
     }
 
     foreach ($form as $element) {
-        $type = isset($element['type']) ? $element['type'] : "";
-        $name = isset($element['name']) ? $element['name'] : "";
-        $value = isset($element['value']) ? $element['value'] : "";
-        $label = isset($element['label']) ? $element['label'] : "";
-        $class = isset($element['class']) ? $element['class'] : "";
-        $other = isset($element['other']) ? $element['other'] : "";
+        $type = $element['type'] ?? "";
+        $name = $element['name'] ?? "";
+        $value = $element['value'] ?? "";
+        $label = $element['label'] ?? "";
+        $class = $element['class'] ?? "";
+        $other = $element['other'] ?? "";
 
         if ($type != "") {
             $formFinal .= "<input type=\"$type\" name=\"$name\" value=\"$value\" class=\"$class\" placeholder=\"$label\" $other/>\n";
@@ -132,4 +135,22 @@ function displayForm($form)
     }
     $formFinal .= "</form> \n";
     return $formFinal;
+}
+
+function isActivePage($page): string
+{
+    if ($_SERVER['PHP_SELF'] === "/webd3201/teboekhorstj/$page") {
+        return 'active';
+    } else {
+        return '';
+    }
+}
+
+function formatPhone($number) {
+	if(  preg_match( '/(\d{3})(\d{3})(\d{4})$/', $number,  $matches ) )
+	{
+		return "($matches[1]) $matches[2]-$matches[3]";
+	}else {
+		return $number;
+	}
 }
