@@ -12,17 +12,17 @@ function db_connect()
 
 $conn = db_connect();
 
-$user_select = pg_prepare($conn, "user_select", "SELECT * FROM users WHERE EmailAddress = $1");
-$update_accessed = pg_prepare($conn, "update_accessed", "UPDATE users SET LastAccess = $1 WHERE Id = $2");
-$get_sales_people = pg_prepare($conn, "get_sales_people", "SELECT * FROM users WHERE Type = 's'");
-$get_userId = pg_prepare($conn, "get_userId", "SELECT Id From users Where EmailAddress = $1");
-$get_clients = pg_prepare($conn, "get_clients", "SELECT * FROM clients WHERE salesId = $1");
-$check_for_client = pg_prepare($conn, "check_for_client", "SELECT Id FROM clients WHERE email = $1");
-$check_for_salesperson = pg_prepare($conn, "check_for_salesperson", "SELECT Id FROM users WHERE EmailAddress = $1");
-$add_user = pg_prepare($conn, "add_user", "INSERT INTO users(EmailAddress, Password, FirstName, LastName, LastAccess, EnrolDate, Enabled, Type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)");
-$add_client = pg_prepare($conn, "add_client", "INSERT INTO clients(email, salesID, firstName, lastName, phoneNum, phoneExt) VALUES ($1, $2, $3, $4, $5, $6)");
-$get_calls = pg_prepare($conn, "get_calls", "SELECT * FROM calls WHERE client_id = $1");
-$add_call = pg_prepare($conn, "add_call", "INSERT INTO calls(client_id, time) VALUES ($1, $2)");
+pg_prepare($conn, "user_select", "SELECT * FROM users WHERE EmailAddress = $1");
+pg_prepare($conn, "update_accessed", "UPDATE users SET LastAccess = $1 WHERE Id = $2");
+pg_prepare($conn, "get_sales_people", "SELECT * FROM users WHERE Type = 's'");
+pg_prepare($conn, "get_userId", "SELECT Id From users Where EmailAddress = $1");
+pg_prepare($conn, "get_clients", "SELECT * FROM clients WHERE salesId = $1");
+pg_prepare($conn, "check_for_client", "SELECT Id FROM clients WHERE email = $1");
+pg_prepare($conn, "check_for_salesperson", "SELECT Id FROM users WHERE EmailAddress = $1");
+pg_prepare($conn, "add_user", "INSERT INTO users(EmailAddress, Password, FirstName, LastName, LastAccess, EnrolDate, Enabled, Type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)");
+pg_prepare($conn, "add_client", "INSERT INTO clients(email, salesID, firstName, lastName, phoneNum, phoneExt) VALUES ($1, $2, $3, $4, $5, $6)");
+pg_prepare($conn, "get_calls", "SELECT * FROM calls WHERE client_id = $1");
+pg_prepare($conn, "add_call", "INSERT INTO calls(client_id, time) VALUES ($1, $2)");
 
 
 function user_select($email)
