@@ -1,8 +1,14 @@
 <?php
-/*
- * Jaxon teBoekhorst
- * 13 September 2022
- * WEBD3201  
+/**
+ * This is for my WEBD-3201 course
+ * This file contains the dashboard page for my site
+ *
+ * This page has no functionality besides messages
+ *
+ * PHP Version 7.2
+ *
+ * @author Jaxon teBoekhorst
+ * @version 1.0(September, 13, 2022)
  */
 
 $title = "WEBD3201 Dashboard Page";

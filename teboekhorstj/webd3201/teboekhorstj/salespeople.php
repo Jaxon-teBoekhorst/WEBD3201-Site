@@ -1,8 +1,14 @@
 <?php
-/*
- * Jaxon teBoekhorst
- * 04 October 2022
- * WEBD3201  
+/**
+ * This is for my WEBD-3201 course
+ * This file contains the salespeople page for my site
+ *
+ * This page allows admins to add salespeople to the user table in the site database
+ *
+ * PHP Version 7.2
+ *
+ * @author Jaxon teBoekhorst
+ * @version 1.0(October, 04, 2022)
  */
 
 $title = "WEBD3201 Calls Page";

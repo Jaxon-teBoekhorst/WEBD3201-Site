@@ -1,8 +1,12 @@
 <?php
-/*
- * Jaxon teBoekhorst
- * 13 September 2022
- * WEBD3201  
+/**
+ * This is for my WEBD-3201 course
+ * This file contains functions to be used throughout the whole website
+ *
+ * PHP Version 7.2
+ *
+ * @author Jaxon teBoekhorst
+ * @version 1.0(September, 13, 2022)
  */
 
 /**

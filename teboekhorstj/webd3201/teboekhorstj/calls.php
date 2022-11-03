@@ -1,8 +1,15 @@
 <?php
-/*
- * Jaxon teBoekhorst
- * 04 October 2022
- * WEBD3201  
+/**
+ * This is for my WEBD-3201 course
+ * This file contains the calls page for my website
+ *
+ * This page allow salespeople to add call records to their clients and view what calls they have made with their clients
+ * Admins are able to do everything that salespeople can, though they can select which salesperson it applies to
+ *
+ * PHP Version 7.2
+ *
+ * @author Jaxon teBoekhorst
+ * @version 1.0(October, 04, 2022)
  */
 
 $title = "WEBD3201 Calls Page";

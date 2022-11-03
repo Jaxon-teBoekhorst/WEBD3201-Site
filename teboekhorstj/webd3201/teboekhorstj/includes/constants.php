@@ -1,25 +1,27 @@
-<?php 
-/*
- * Jaxon teBoekhorst
- * 13 September 2022
- * WEBD3201  
+<?php
+/**
+ * This is for my WEBD-3201 course
+ * This file contains constants to be used throughout the whole website
+ *
+ * PHP Version 7.2
+ *
+ * @author Jaxon teBoekhorst
+ * @version 1.0(September, 13, 2022)
  */
 
 /***** COOKIES *****/
-define("COOKIE_LIFESPAN", "2592000");
+const COOKIE_LIFESPAN = "2592000";
 
 /***** USER TYPES *****/
-define("ADMIN", "s");
-define("AGENT", "a");
-define("CLIENT", "c");
-define("PENDING", "p");
-define("DISABLED", "d");
+const ADMIN = "s";
+const AGENT = "a";
+const CLIENT = "c";
+const PENDING = "p";
+const DISABLED = "d";
 
 /***** DATABASE CONSTANTS *****/
-define("DB_HOST", "127.0.0.1");
-define("DATABASE", "teboekhorstj_db");
-define("DB_ADMIN", "teboekhorstj");
-define("DB_PORT", "5432");
-define("DB_PASSWORD", "100821229");
-
-?>
+const DB_HOST = "127.0.0.1";
+const DATABASE = "teboekhorstj_db";
+const DB_ADMIN = "teboekhorstj";
+const DB_PORT = "5432";
+const DB_PASSWORD = "100821229";

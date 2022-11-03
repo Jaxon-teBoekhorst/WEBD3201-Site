@@ -1,4 +1,17 @@
 <?php
+/**
+ * This is for my WEBD-3201 course
+ * This file contains the sign-in page for my site
+ *
+ * This page has two form inputs that allow users to sign in
+ *
+ * PHP Version 7.2
+ *
+ * @author Jaxon teBoekhorst
+ * @version 1.0(September, 13, 2022)
+ */
+
+
 /*
  * Jaxon teBoekhorst
  * 13 September 2022

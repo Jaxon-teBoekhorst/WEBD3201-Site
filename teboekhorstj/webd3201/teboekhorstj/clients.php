@@ -1,8 +1,15 @@
 <?php
-/*
- * Jaxon teBoekhorst
- * 04 October 2022
- * WEBD3201  
+/**
+ * This is for my WEBD-3201 course
+ * This file contains the clients page for my site
+ *
+ * This page allows salespeople to add a client and view their current clients
+ * Admins are able to do everything that salespeople can, though they can select which salesperson it applies to
+ *
+ * PHP Version 7.2
+ *
+ * @author Jaxon teBoekhorst
+ * @version 1.0(September, 13, 2022)
  */
 
 $title = "WEBD3201 Calls Page";

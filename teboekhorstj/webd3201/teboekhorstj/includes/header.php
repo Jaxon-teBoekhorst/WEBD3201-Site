@@ -1,4 +1,16 @@
 <?php
+/**
+ * This is for my WEBD-3201 course
+ * This file contains header information
+ *
+ * This file contains the navbar, top bar, and general site layout to be used acress all pages
+ *
+ * PHP Version 7.2
+ *
+ * @author Jaxon teBoekhorst
+ * @version 1.0(September, 13, 2022)
+ */
+
 /*
  * Jaxon teBoekhorst
  * 13 September 2022
