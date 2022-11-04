@@ -25,3 +25,7 @@ const DATABASE = "teboekhorstj_db";
 const DB_ADMIN = "teboekhorstj";
 const DB_PORT = "5432";
 const DB_PASSWORD = "100821229";
+
+/***** OTHER CONSTANTS *****/
+
+const PAGE_RESULTS = 2;

@@ -15,15 +15,15 @@ CREATE TABLE calls
 );
 
 INSERT INTO calls (client_id, time)
-VALUES (1001,
+VALUES (1000,
         '2022-10-19 19:24:36');
 
 INSERT INTO calls (client_id, time)
-VALUES (1001,
+VALUES (1000,
         '2022-10-20 09:37:24');
 
 INSERT INTO calls (client_id, time)
-VALUES (1003,
+VALUES (1002,
         '2022-10-22 09:13:58');
 
 SELECT *

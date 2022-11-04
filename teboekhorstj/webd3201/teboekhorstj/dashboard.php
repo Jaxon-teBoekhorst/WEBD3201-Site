@@ -19,7 +19,7 @@ $desc = "Display a users dashboard";
 
 require_once("./includes/header.php");
 
-if (!isLoggedIn()) {
+if (!is_logged_in()) {
     redirect("./sign-in.php");
 }
 ?>

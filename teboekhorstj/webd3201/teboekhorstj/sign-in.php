@@ -26,7 +26,7 @@ $desc = "User sign in";
 
 require_once("./includes/header.php");
 
-if (isLoggedIn()) {
+if (is_logged_in()) {
     redirect("./dashboard.php");
 }
 
@@ -38,11 +38,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_POST["inputEmail"] = "";
         $_POST["inputPassword"] = "";
 
-        signIn($email, $password);
+        sign_in($email, $password);
     }
 }
 
-echo displayForm(
+echo display_form(
     [
         "prepended" => "
         <h1 class=\"h3 mb-3 font-weight-normal text-center\">Please sign in</h1>

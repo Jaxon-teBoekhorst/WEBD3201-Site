@@ -21,7 +21,7 @@ require_once("./includes/header.php");
 ?>
 
 <h1 class="cover-heading">Welcome!</h1>
-<h2><?php echo flashMessage(); ?></h2>
+<h2><?php echo flash_message(); ?></h2>
 <p class="lead">This is my homepage for my WEBD-3201 website</p>
 
 

@@ -29,10 +29,10 @@ session_start();
 
 if ($email != "") {
     // log sign out
-    logSignOut($email);
+    log_sign_out($email);
 
     // set message and redirect
-    setMessage($email . "<br/>has successfully logged out");
+    set_message($email . "<br/>has successfully logged out");
 }
 
 redirect("./sign-in.php");
