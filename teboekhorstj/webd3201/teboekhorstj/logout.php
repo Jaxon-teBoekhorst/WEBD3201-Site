@@ -1,8 +1,14 @@
 <?php
-/*
- * Jaxon teBoekhorst
- * 25 September 2022
- * WEBD3201  
+/**
+ * This is for my WEBD-3201 course
+ * This file handles logging users out from my site
+ *
+ * This page has no visuals
+ *
+ * PHP Version 7.2
+ *
+ * @author Jaxon teBoekhorst
+ * @version 1.0(September, 25, 2022)
  */
 
 $title = "WEBD3201 Logout Page";
@@ -23,10 +29,10 @@ session_start();
 
 if ($email != "") {
     // log sign out
-    logSignOut($email);
+    log_sign_out($email);
 
     // set message and redirect
-    setMessage($email . "<br/>has successfully logged out");
+    set_message($email . "<br/>has successfully logged out");
 }
 
 redirect("./sign-in.php");

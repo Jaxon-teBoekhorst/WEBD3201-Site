@@ -1,8 +1,15 @@
 <?php
-/*
- * Jaxon teBoekhorst
- * 04 October 2022
- * WEBD3201  
+/**
+ * This is for my WEBD-3201 course
+ * This file contains the calls page for my website
+ *
+ * This page allow salespeople to add call records to their clients and view what calls they have made with their clients
+ * Admins are able to do everything that salespeople can, though they can select which salesperson it applies to
+ *
+ * PHP Version 7.2
+ *
+ * @author Jaxon teBoekhorst
+ * @version 1.0(October, 04, 2022)
  */
 
 $title = "WEBD3201 Calls Page";
@@ -19,7 +26,7 @@ $user_id = $user != "" ? $_SESSION["user_id"] : "";
 $selected_client = $_POST['current_client'] ?? '';
 
 if (!($user_type == 'a' || $user_type == 's')) {
-	setMessage('Sorry, You do not have permission to use this page');
+	set_message('Sorry, You do not have permission to use this page');
 	redirect('./sign-in.php');
 }
 
@@ -51,10 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 		// add call to database
 		if (!add_call($selected_client)) {
-			setMessage("Failed to add a call for $selected_client");
+			set_message("Failed to add a call for $selected_client");
 			redirect("calls.php");
 		}else{
-			setMessage("Success!");
+			set_message("Success!");
 			redirect("calls.php");
 		}
 	}
@@ -86,7 +93,7 @@ if ($user_type == 'a') {
 
 	// drop down selection
 	echo "<p class='h3 mb-3 font-weight-normal text-center'>Select Salesperson</p>";
-	echo displayForm([
+	echo display_form([
 		"appended" => $dropdown .
 			"<button class='btn btn-lg btn-primary btn-block mt-3 mb-5' name='btnSalesperson' type='submit'>Show Calls</button>"
 	]);
@@ -114,7 +121,7 @@ if (sizeof($clients) > 0) {
 	}
 	$dropdown .= "</select>";
 
-	echo displayForm([
+	echo display_form([
 		"appended" => $dropdown .
 			"<button class='btn btn-lg btn-primary btn-block mt-3 mb-5' type='submit'>Add Call</button>"
 	]);

@@ -1,8 +1,15 @@
 <?php
-/*
- * Jaxon teBoekhorst
- * 04 October 2022
- * WEBD3201  
+/**
+ * This is for my WEBD-3201 course
+ * This file contains the clients page for my site
+ *
+ * This page allows salespeople to add a client and view their current clients
+ * Admins are able to do everything that salespeople can, though they can select which salesperson it applies to
+ *
+ * PHP Version 7.2
+ *
+ * @author Jaxon teBoekhorst
+ * @version 1.0(September, 13, 2022)
  */
 
 $title = "WEBD3201 Calls Page";
@@ -18,7 +25,7 @@ $user_type = $user != "" ? $_SESSION["user_type"] : "";
 $user_id = $user != "" ? $_SESSION["user_id"] : "";
 
 if (!($user_type == 'a' || $user_type == 's')) {
-	setMessage('Sorry, You do not have permission to use this page');
+	set_message('Sorry, You do not have permission to use this page');
 	redirect('./sign-in.php');
 }
 
@@ -30,6 +37,7 @@ $client_l_name = $_POST['client_l_name'] ?? '';
 $client_email = $_POST['client_email'] ?? '';
 $client_phone_num = $_POST['client_phone_num'] ?? '';
 $client_phone_ext = $_POST['client_phone_ext'] ?? '';
+$page = $_POST['page'] ?? 1;
 
 if ($user_type == 'a') {
 	// get selected user and their id
@@ -110,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			if (!add_client($client_f_name, $client_l_name, $client_email, $client_phone_num, $client_phone_ext, $current_user_id)) {
 				$error_message = "Could not successfully add $client_f_name $client_l_name to the database";
 			} else {
-				setMessage("Successfully added $client_f_name $client_l_name to the database");
+				set_message("Successfully added $client_f_name $client_l_name to the database");
 				redirect('clients.php');
 			}
 		}
@@ -144,7 +152,7 @@ if ($user_type == 'a') {
 
 	// drop down selection
 	echo "<p class='h3 mb-3 font-weight-normal text-center'>Select Salesperson</p>";
-	echo displayForm([
+	echo display_form([
 		"appended" => $dropdown .
 			"<button class='btn btn-lg btn-primary btn-block mt-3 mb-5' name='btnSalesperson' type='submit'>Show Clients</button>"
 	]);
@@ -161,38 +169,43 @@ if (pg_num_rows($clients) == 0) {
 		echo "<p class='h4 text-center mb-5'>You have no clients</p>";
 	}
 } else {
+	echo "<p class='h5'>Clients</p>";
+	echo display_table(
+		[
+			[
+				"email" => "Email",
+				"firstName" => "First Name",
+				"lastName" => "Last Name",
+				"phoneNum" => "Phone Number",
+				"phoneExt" => "Phone Extension",
+				"logoPath" => "Logo"
+			],
+			$clients,
+			pg_num_rows($clients),
+			$page
+		]
+	);
 
-	echo "
-<p class='h5'>Clients</p>
-<table class='table mb-5'>
-<thead>
-	<th scope='col'>Id</th>
-	<th scope='col'>Name</th>
-	<th scope='col'>Email</th>
-	<th scope='col'>Phone</th>
-</thead>
-<tbody>
-\n";
+	// TODO separate button from other buttons
+	echo "<form class='form-control border-0' method='POST'>
+<p>Page:</p>
+<select class='form-control mb-auto' style='width: auto; height: auto' name='page'>";
 
-	for ($i = 0; $i < pg_num_rows($clients); $i++) {
-		$client = pg_fetch_row($clients, $i);
-
-		echo "<tr>\n";
-		echo "<th scope='row'>" . $client[0] . "</th>\n";
-		echo "<td>" . $client[3] . " " . $client[4] . "</td>\n";
-		echo "<td>" . $client[1] . "</td>\n";
-		echo "<td>" . formatPhone($client[5]) . " " . $client[6] . "</td>\n";
-		echo "<tr>\n";
-
+	for ($i = 0;
+		 $i <= ceil((pg_num_rows($clients) / 10));
+		 $i++) {
+		$selected_page = $i + 1;
+		echo "<option value='$selected_page'>$selected_page</option>";
 	}
 
-	echo "
-</tbody>
-</table> \n";
+	echo "</select>
+	<button class='btn btn-primary' type='submit'>Submit</button>
+</form>";
 }
+
 // Create new clients
-echo "<h2 class='h3 mb-3 font-weight-normal text-center'> Create New Client</h2>";
-echo displayForm(
+echo "<h2 class='h3 mb-3  mt-5 font-weight-normal text-center'> Create New Client</h2>";
+echo display_form(
 	[
 		[
 			"type" => "text",

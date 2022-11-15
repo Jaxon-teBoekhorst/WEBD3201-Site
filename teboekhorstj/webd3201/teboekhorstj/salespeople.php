@@ -1,8 +1,14 @@
 <?php
-/*
- * Jaxon teBoekhorst
- * 04 October 2022
- * WEBD3201  
+/**
+ * This is for my WEBD-3201 course
+ * This file contains the salespeople page for my site
+ *
+ * This page allows admins to add salespeople to the user table in the site database
+ *
+ * PHP Version 7.2
+ *
+ * @author Jaxon teBoekhorst
+ * @version 1.0(October, 04, 2022)
  */
 
 $title = "WEBD3201 Calls Page";
@@ -17,7 +23,7 @@ $user = isset($_SESSION["current_user"]) ? isset($_SESSION["current_user"]) : ""
 $user_type = $user != "" ? $_SESSION["user_type"] : '';
 
 if ($user_type != 'a') {
-	setMessage('Sorry, You do not have permission to use this page');
+	set_message('Sorry, You do not have permission to use this page');
 	redirect('./sign-in.php');
 }
 
@@ -77,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		if (!add_salesperson($f_name, $l_name, $email, $password)) {
 			$error_message .= "Failed to add user $f_name $l_name to the database";
 		} else {
-			setMessage("Successfully added $f_name $l_name as a salesperson");
+			set_message("Successfully added $f_name $l_name as a salesperson");
 			redirect('salespeople.php');
 		}
 	} else {
@@ -87,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 // Create new salesperson
 echo "<h2 class='h3 mb-3 font-weight-normal text-center'> Create New Salesperson</h2>";
-echo displayForm(
+echo display_form(
 	[
 		[
 			"type" => "text",

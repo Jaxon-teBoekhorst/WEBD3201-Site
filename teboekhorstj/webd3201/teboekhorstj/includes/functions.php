@@ -1,8 +1,12 @@
 <?php
-/*
- * Jaxon teBoekhorst
- * 13 September 2022
- * WEBD3201  
+/**
+ * This is for my WEBD-3201 course
+ * This file contains functions to be used throughout the whole website
+ *
+ * PHP Version 7.2
+ *
+ * @author Jaxon teBoekhorst
+ * @version 1.0(September, 13, 2022)
  */
 
 /**
@@ -23,7 +27,7 @@ function redirect(string $url)
  * @param string $message message to use
  * @return void
  */
-function setMessage(string $message)
+function set_message(string $message)
 {
 	$_SESSION['message'] = $message;
 }
@@ -33,7 +37,7 @@ function setMessage(string $message)
  *
  * @return string
  */
-function getMessage(): string
+function get_message(): string
 {
 	return $_SESSION['message'];
 }
@@ -43,7 +47,7 @@ function getMessage(): string
  *
  * @return bool
  */
-function isMessage(): bool
+function is_message(): bool
 {
 	return isset($_SESSION['message']);
 }
@@ -53,7 +57,7 @@ function isMessage(): bool
  *
  * @return void
  */
-function clearMessage()
+function clear_message()
 {
 	unset($_SESSION['message']);
 }
@@ -63,10 +67,10 @@ function clearMessage()
  *
  * @return string
  */
-function flashMessage(): string
+function flash_message(): string
 {
-	$message = isMessage() ? getMessage() : "";
-	clearMessage();
+	$message = is_message() ? get_message() : "";
+	clear_message();
 	return $message;
 }
 
@@ -75,7 +79,7 @@ function flashMessage(): string
  *
  * @return bool
  */
-function isLoggedIn(): bool
+function is_logged_in(): bool
 {
 	return !$_SESSION["current_user"] == "";
 }
@@ -88,7 +92,7 @@ function isLoggedIn(): bool
  * @param string $password
  * @return void
  */
-function signIn(string $email, string $password)
+function sign_in(string $email, string $password)
 {
 	$user = user_select($email);
 
@@ -109,18 +113,18 @@ function signIn(string $email, string $password)
 			$_SESSION["user_type"] = $user_type;
 			$_SESSION["user_id"] = $user_id;
 
-			setMessage("Welcome " . $user_fname . " " . $user_lname);
+			set_message("Welcome " . $user_fname . " " . $user_lname);
 			update_accessed($user_id);
-			logSignIn($email, true);
+			log_sign_in($email, true);
 			redirect("./dashboard.php");
 		} else {
-			setMessage("Incorrect email or password");
-			logSignIn($email, false);
+			set_message("Incorrect email or password");
+			log_sign_in($email, false);
 			redirect("sign-in.php");
 		}
 	} else {
-		setMessage("No user found");
-		logSignIn($email, false);
+		set_message("No user found");
+		log_sign_in($email, false);
 		redirect("sign-in.php");
 	}
 }
@@ -132,7 +136,7 @@ function signIn(string $email, string $password)
  * @param bool $success whether the user successfully signed in
  * @return void
  */
-function logSignIn(string $email, bool $success)
+function log_sign_in(string $email, bool $success)
 {
 	$file_name = "./logs/" . date("Ymd") . "_log.txt";
 	$message = $success ?
@@ -150,7 +154,7 @@ function logSignIn(string $email, bool $success)
  * @param string $email email of the user attempting to sign in
  * @return void
  */
-function logSignOut(string $email)
+function log_sign_out(string $email)
 {
 	$file_name = "./logs/" . date("Ymd") . "_log.txt";
 	$message = $email . "successfully signed out at " . date("h:ia") . "\n";
@@ -165,28 +169,28 @@ function logSignOut(string $email)
  * create a string of that contains the html to create a form
  *
  * Example: Display a form with a text input that stores its value to $_POST['text'],
- * 			the default text is the $value variable,
- * 			the label says Label Text,
- * 			the css class is form-control,
- * 			will autofocus and is a required value
+ *            the default text is the $value variable,
+ *            the label says Label Text,
+ *            the css class is form-control,
+ *            will autofocus and is a required value
  *
  * echo displayForm(
- * 		[
- *			[
- *				"type" => "text",
- *				"name" => "text",
- *				"value" => $value,
- *				"label" => "Label Text",
- *				"class" => "form-control",
- * 				"other" => "required autofocus"
- *			],
- * 		]
+ *        [
+ *            [
+ *                "type" => "text",
+ *                "name" => "text",
+ *                "value" => $value,
+ *                "label" => "Label Text",
+ *                "class" => "form-control",
+ *                "other" => "required autofocus"
+ *            ],
+ *        ]
  * );
  *
  * @param array $form an array containing all form elements and any other form components
- * @return string
+ * @return string html string that contains the form
  */
-function displayForm(array $form): string
+function display_form(array $form): string
 {
 	$self = $_SERVER['PHP_SELF'];
 	$formFinal = "<form action='$self' method='POST' class='form-signin align-content-center'>";
@@ -214,12 +218,67 @@ function displayForm(array $form): string
 }
 
 /**
+ * This function take an array and will turn it into an html table
+ *
+ * @param array $table this contains the column information Format:
+ *                        [[headers], query result, amount of clients, selected page]
+ * @return string html string that contains the table data
+ */
+function display_table(array $table): string
+{
+	// fetch values from array
+	$header_array = $table[0];
+	$rows = $table[1];
+	$max_results = $table[2];
+	$page = $table[3] - 1;
+
+	/** String containing the final table */
+	$result = "<table class='table'>\n";
+
+	// generate headers
+	/** array containing the table headers */
+	$headers = [];
+	foreach ($header_array as $header_key => $header_value) {
+		$headers[] = $header_key;
+		$result .= "<th>$header_value</th>";
+	}
+
+	/** Start point of the page loop */
+	$start = PAGE_RESULTS * $page - 1;
+	/** End point of the page loop */
+	$end = $start + PAGE_RESULTS;
+
+	if ($end >= $max_results) {
+		// subtract one for array offset
+		$end = $max_results - 1;
+	}
+
+	// loop through all rows
+	for ($i = $start;
+		 $i < $end;
+		 $i++) {
+		// populate row
+		$result .= "<tr>\n";
+		foreach ($headers as $header) {
+			$row_data = pg_fetch_result($rows, $i + 1, $header);
+			$result .= "<td>$row_data</td>";
+		}
+		$result .= "\n</tr>\n";
+	}
+
+	// append table closer
+	$result .= "</table>\n";
+	// return final table
+	return $result;
+}
+
+/**
  * function to check if specified page is the page that the user is on
  *
  * @param string $page specified page
  * @return string
  */
-function isActivePage(string $page): string
+function is_active_page(string $page): string
 {
 	if ($_SERVER['PHP_SELF'] === "/webd3201/teboekhorstj/$page") {
 		return 'active';
@@ -234,7 +293,7 @@ function isActivePage(string $page): string
  * @param string $number input phone number
  * @return string
  */
-function formatPhone(string $number): string
+function format_phone(string $number): string
 {
 	if (preg_match('/(\d{3})(\d{3})(\d{4})$/', $number, $matches)) {
 		return "($matches[1]) $matches[2]-$matches[3]";

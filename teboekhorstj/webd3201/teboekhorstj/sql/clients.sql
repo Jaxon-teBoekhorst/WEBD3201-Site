@@ -15,7 +15,8 @@ CREATE TABLE clients
     firstName VARCHAR(128) NOT NULL,
     lastName  VARCHAR(128) NOT NULL,
     phoneNum  VARCHAR(10)  NOT NULL,
-    phoneExt  VARCHAR(4)
+    phoneExt  VARCHAR(4),
+    logoPath  VARCHAR(255)
 );
 
 INSERT INTO clients(email, salesID, firstName, lastName, phoneNum)

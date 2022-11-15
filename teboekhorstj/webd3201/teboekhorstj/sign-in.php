@@ -1,4 +1,17 @@
 <?php
+/**
+ * This is for my WEBD-3201 course
+ * This file contains the sign-in page for my site
+ *
+ * This page has two form inputs that allow users to sign in
+ *
+ * PHP Version 7.2
+ *
+ * @author Jaxon teBoekhorst
+ * @version 1.0(September, 13, 2022)
+ */
+
+
 /*
  * Jaxon teBoekhorst
  * 13 September 2022
@@ -13,7 +26,7 @@ $desc = "User sign in";
 
 require_once("./includes/header.php");
 
-if (isLoggedIn()) {
+if (is_logged_in()) {
     redirect("./dashboard.php");
 }
 
@@ -25,11 +38,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_POST["inputEmail"] = "";
         $_POST["inputPassword"] = "";
 
-        signIn($email, $password);
+        sign_in($email, $password);
     }
 }
 
-echo displayForm(
+echo display_form(
     [
         "prepended" => "
         <h1 class=\"h3 mb-3 font-weight-normal text-center\">Please sign in</h1>
