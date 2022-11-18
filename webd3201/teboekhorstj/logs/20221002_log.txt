@@ -1,0 +1,28 @@
+Sign in success at 03:19pm. User jaxon.teboekhorst@dcmail.ca sign in. 
+jaxon.teboekhorst@dcmail.casucccessfully signed out at 03:19pm
+Sign in failed at 03:19pm. Email provided jajjaaja@kjlgsgfasf.con
+Sign in success at 03:19pm. User jdoe@dcmail.ca sign in. 
+jdoe@dcmail.casucccessfully signed out at 03:19pm
+Sign in success at 03:19pm. User bsmith@dcmail.ca sign in. 
+Sign in failed at 03:19pm. Email provided jaxon.teboekhorst@dcmail.ca
+Sign in success at 03:19pm. User jaxon.teboekhorst@dcmail.ca sign in. 
+jaxon.teboekhorst@dcmail.casucccessfully signed out at 03:20pm
+Sign in success at 03:20pm. User jaxon.teboekhorst@dcmail.ca sign in. 
+jaxon.teboekhorst@dcmail.casucccessfully signed out at 03:20pm
+Sign in success at 03:21pm. User jaxon.teboekhorst@dcmail.ca sign in. 
+jaxon.teboekhorst@dcmail.casucccessfully signed out at 03:21pm
+Sign in success at 03:23pm. User jaxon.teboekhorst@dcmail.ca sign in. 
+jaxon.teboekhorst@dcmail.casucccessfully signed out at 03:23pm
+Sign in failed at 03:24pm. Email provided jaxon.teboekhorst@dcmail.ca
+Sign in success at 03:26pm. User jaxon.teboekhorst@dcmail.ca sign in. 
+jaxon.teboekhorst@dcmail.casucccessfully signed out at 03:26pm
+Sign in success at 03:33pm. User jaxon.teboekhorst@dcmail.ca sign in. 
+jaxon.teboekhorst@dcmail.casucccessfully signed out at 03:33pm
+Sign in success at 03:33pm. User jaxon.teboekhorst@dcmail.ca sign in. 
+jaxon.teboekhorst@dcmail.casucccessfully signed out at 03:33pm
+Sign in success at 03:34pm. User jaxon.teboekhorst@dcmail.ca sign in. 
+jaxon.teboekhorst@dcmail.casucccessfully signed out at 03:34pm
+Sign in success at 03:34pm. User jaxon.teboekhorst@dcmail.ca sign in. 
+jaxon.teboekhorst@dcmail.casucccessfully signed out at 03:34pm
+Sign in success at 03:35pm. User jaxon.teboekhorst@dcmail.ca sign in. 
+jaxon.teboekhorst@dcmail.casucccessfully signed out at 03:35pm

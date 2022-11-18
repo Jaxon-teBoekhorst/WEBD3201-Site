@@ -1,0 +1,10 @@
+Sign in success at 08:32pm. User jaxon.teboekhorst@dcmail.ca sign in. 
+jaxon.teboekhorst@dcmail.casucccessfully signed out at 08:32pm
+Sign in success at 08:39pm. User jaxon.teboekhorst@dcmail.ca sign in. 
+jaxon.teboekhorst@dcmail.casucccessfully signed out at 08:39pm
+Sign in success at 08:41pm. User jaxon.teboekhorst@dcmail.ca sign in. 
+jaxon.teboekhorst@dcmail.casucccessfully signed out at 08:43pm
+Sign in failed at 09:09pm. Email provided jaxon.teboekhorst@dcmail.ca
+Sign in failed at 09:09pm. Email provided jaxon.teboekhorst@dcmail.ca
+Sign in success at 09:32pm. User jaxon.teboekhorst@dcmail.ca sign in. 
+jaxon.teboekhorst@dcmail.casucccessfully signed out at 09:32pm
