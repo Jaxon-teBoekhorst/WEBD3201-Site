@@ -32,3 +32,10 @@ const DB_PASSWORD = "100821229";
 /***** OTHER CONSTANTS *****/
 /** This is for the amount of results per table page */
 const RESULTS_PER_PAGE = 10;
+const IMAGE_HEADERS = ['logoPath'];
+
+/***** FILE UPLOAD CONSTANTS *****/
+/***/
+const MAX_FILE_SIZE = 3000000;
+const MAX_SIZE_STR = '3MB';
+const ACCEPTED_FILE_TYPES = ['jpg', 'jpeg', 'jpe', 'png', 'gif', 'svg'];

@@ -39,6 +39,13 @@ $client_phone_num = $_POST['client_phone_num'] ?? '';
 $client_phone_ext = $_POST['client_phone_ext'] ?? '';
 $page = $_POST['page'] ?? 1;
 
+// get file info
+$logo_name = $_FILES['logo_name']['name'] ?? '';
+$logo_path = $_FILES['logo_name']['tmp_name'] ?? '';
+$logo_error = $_FILES['logo_name']['error'] ?? '';
+$logo_size = $_FILES['logo_name']['size'] ?? '';
+$logo_ext = pathinfo($logo_name, PATHINFO_EXTENSION);
+
 if ($user_type == 'a') {
 	// get selected user and their id
 	$current_salesperson = $_SESSION['selected_salesperson'] ?? 'jax.tebs+webd3201salesperson@outlook.com';
@@ -106,17 +113,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		}
 
 		// validate extension
-		$pext = preg_replace("/[^0-9]/", "", $client_phone_ext);
+		$phone_ext = preg_replace("/[^0-9]/", "", $client_phone_ext);
 
 		// check if the client already exists
 		if (check_for_client($client_email)) {
 			$valid_client = false;
-			$error_message .= "A client already exists with that email";
+			$error_message .= "A client already exists with that email<br/>";
 		}
 
-		// add client to the database
+		if ($logo_error != 0) {
+			$valid_client = false;
+			$error_message .= "An error has occurred when trying to upload the logo<br/>";
+		}
+
+		if (!in_array($logo_ext, ACCEPTED_FILE_TYPES)){
+			$valid_client = false;
+			$error_message .= 'The selected file is not an accepted file type<br/>';
+		}
+
+		if ($logo_size > MAX_FILE_SIZE) {
+			$valid_client = false;
+			$error_message .= sprintf("The selected file is too large, The max size is %s<br/>", MAX_SIZE_STR);
+		}
+
 		if ($valid_client) {
-			if (!add_client($client_f_name, $client_l_name, $client_email, $client_phone_num, $client_phone_ext, $current_user_id)) {
+			// Store uploaded logo file if it exists
+			$stored_path = '';
+			if ($logo_name != '') {
+				$stored_path = "./uploads/$logo_name";
+				move_uploaded_file($logo_path, $stored_path);
+			}
+
+			// add client to the database
+			if (!add_client($client_f_name, $client_l_name, $client_email, $client_phone_num, $client_phone_ext, $current_user_id, $stored_path)) {
 				$error_message = "Could not successfully add $client_f_name $client_l_name to the database";
 			} else {
 				set_message("Successfully added $client_f_name $client_l_name to the database");
@@ -249,10 +278,9 @@ echo display_form(
 			"class" => "form-control"
 		],
 		[
-			"type"=>"file",
-			"name"=>"file_name",
-			"class"=>"form-control-file",
-			"other"=>"id='file_upload'"
+			"type" => "file",
+			"class" => "form-control",
+			"name" => "logo_name"
 		],
 		"appended" => "
 		<label class='form-text'>Select Client Logo</label>

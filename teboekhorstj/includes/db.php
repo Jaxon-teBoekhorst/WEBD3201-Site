@@ -30,7 +30,7 @@ pg_prepare($conn, "get_clients", "SELECT * FROM clients WHERE salesId = $1");
 pg_prepare($conn, "check_for_client", "SELECT Id FROM clients WHERE email = $1");
 pg_prepare($conn, "check_for_salesperson", "SELECT Id FROM users WHERE EmailAddress = $1");
 pg_prepare($conn, "add_user", "INSERT INTO users(EmailAddress, Password, FirstName, LastName, LastAccess, EnrolDate, Enabled, Type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)");
-pg_prepare($conn, "add_client", "INSERT INTO clients(email, salesID, firstName, lastName, phoneNum, phoneExt) VALUES ($1, $2, $3, $4, $5, $6)");
+pg_prepare($conn, "add_client", "INSERT INTO clients(email, salesID, firstName, lastName, phoneNum, phoneExt, logopath) VALUES ($1, $2, $3, $4, $5, $6, $7)");
 pg_prepare($conn, "get_calls_client", "SELECT * FROM calls WHERE client_id = $1");
 pg_prepare($conn, "get_calls_salesperson", "SELECT c.email as email ,call_id as id, time FROM calls LEFT JOIN clients c on c.id = calls.client_id WHERE salesid = $1");
 pg_prepare($conn, "add_call", "INSERT INTO calls(client_id, time) VALUES ($1, $2)");
@@ -148,12 +148,13 @@ function add_salesperson(string $f_name, string $l_name, string $email, string $
  * @param string $phone_num clients phone number
  * @param string $phone_ext clients phone number extension
  * @param int $sales_id id of the salesperson to tie this client to
+ * @param string $logo_path the path pointing to the logo
  * @return false|resource
  */
-function add_client(string $f_name, string $l_name, string $email, string $phone_num, string $phone_ext, int $sales_id)
+function add_client(string $f_name, string $l_name, string $email, string $phone_num, string $phone_ext, int $sales_id, string $logo_path)
 {
 	$conn = db_connect();
-	return pg_execute($conn, "add_client", [$email, $sales_id, $f_name, $l_name, $phone_num, $phone_ext]);
+	return pg_execute($conn, "add_client", [$email, $sales_id, $f_name, $l_name, $phone_num, $phone_ext, $logo_path]);
 }
 
 /**

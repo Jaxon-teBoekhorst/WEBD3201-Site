@@ -193,7 +193,7 @@ function log_sign_out(string $email)
 function display_form(array $form): string
 {
 	$self = $_SERVER['PHP_SELF'];
-	$formFinal = "<form action='$self' method='POST' class='form-signin align-content-center' enctype='multipart/form-data'>";
+	$formFinal = "\n<form action='$self' method='POST' class='form-signin align-content-center' enctype='multipart/form-data'>\n";
 	if (isset($form['prepended'])) {
 		$formFinal .= $form['prepended'];
 	}
@@ -222,9 +222,9 @@ function display_form(array $form): string
  *
  * @param array $table this contains the column information Format:
  *                        [[headers], <br/>
- * 						   query result,  <br/>
- * 						   amount of rows,  <br/>
- * 						   selected page]
+ *                           query result,  <br/>
+ *                           amount of rows,  <br/>
+ *                           selected page]
  * @return string html string that contains the table data
  */
 function display_table(array $table): string
@@ -264,7 +264,13 @@ function display_table(array $table): string
 		$result .= "<tr>\n";
 		foreach ($headers as $header) {
 			$row_data = pg_fetch_result($rows, $i + 1, $header);
-			$result .= "<td>$row_data</td>";
+			// display row data
+			// if the header is an image type and row data isn't empty display it as an image
+			if (in_array($header, IMAGE_HEADERS) && $row_data != '') {
+				$result .= "<td><img class='' src='$row_data' alt='Client Logo' width='15%'></td>";
+			} else {
+				$result .= "<td>$row_data</td>";
+			}
 		}
 		$result .= "\n</tr>\n";
 	}
