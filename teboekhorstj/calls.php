@@ -36,7 +36,7 @@ echo "<h1 class='h4 mb-3 font-weight-normal text-center'>$message</h1>";
 if ($user_type == 'a') {
 	// get selected user and their id
 	$current_salesperson = $_SESSION['selected_salesperson'] ?? 'jax.tebs+webd3201salesperson@outlook.com';
-	$current_user_id = get_userId($current_salesperson);
+	$current_user_id = get_user_id($current_salesperson);
 	$current_user_id = pg_fetch_result($current_user_id, '0', 'Id');
 } else {
 	$current_salesperson = $user;
@@ -47,14 +47,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	if (isset($_POST['btnSalesperson'])) {
 		$current_salesperson = $_POST['salesperson'];
 		$_SESSION['selected_salesperson'] = $current_salesperson;
-		$current_user_id = get_userId($current_salesperson);
+		$current_user_id = get_user_id($current_salesperson);
 		$current_user_id = pg_fetch_result($current_user_id, '0', 'Id');
 	} else if (isset($_POST['btnPage'])) {
 	} else {
 		if ($user_type == 'a') {
 			// get selected user and their id
 			$current_salesperson = $_SESSION['selected_salesperson'] ?? 'jax.tebs+webd3201salesperson@outlook.com';
-			$current_user_id = get_userId($current_salesperson);
+			$current_user_id = get_user_id($current_salesperson);
 			$current_user_id = pg_fetch_result($current_user_id, '0', 'Id');
 		}
 

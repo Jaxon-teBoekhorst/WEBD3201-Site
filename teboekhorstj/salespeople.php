@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 		if (strlen($password) < PASSWORD_MIN_SIZE || strlen($password) > LONG_MAX_SIZE) {
 			$valid_salesperson = false;
-			$error_message .= "The password must be between 8 and 255 characters long<br/>";
+			$error_message .= sprintf("Error, Your password must be between %s and %s characters long<br/>", PASSWORD_MIN_SIZE, LONG_MAX_SIZE);
 			$password = '';
 		}
 

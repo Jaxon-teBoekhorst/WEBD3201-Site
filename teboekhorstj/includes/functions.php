@@ -140,8 +140,8 @@ function log_sign_in(string $email, bool $success)
 {
 	$file_name = "./logs/" . date("Y-m-d") . "_log.txt";
 	$message = $success ?
-		"Sign in success at " . date("h:ia") . ". User " . $email . "\n" :
-		"Sign in failed at " . date("h:ia") . ". Email provided " . $email . "\n";
+		"$email successfully signed in at " . date("h:ia") . '\n' :
+		"$email failed to sign in at " . date("h:ia") . '\n';
 
 	$file = fopen($file_name, "a");
 	fwrite($file, $message);
@@ -157,7 +157,17 @@ function log_sign_in(string $email, bool $success)
 function log_sign_out(string $email)
 {
 	$file_name = "./logs/" . date("Y-m-d") . "_log.txt";
-	$message = $email . "successfully signed out at " . date("h:ia") . "\n";
+	$message = $email . " successfully signed out at " . date("h:ia") . "\n";
+
+	$file = fopen($file_name, "a");
+	fwrite($file, $message);
+	fclose($file);
+}
+
+function log_password_change(string $email)
+{
+	$file_name = "./logs/" . date("Y-m-d") . "_log.txt";
+	$message = $email . " successfully changed their password at " . date("h:ia") . "\n";
 
 	$file = fopen($file_name, "a");
 	fwrite($file, $message);

@@ -11,12 +11,6 @@
  * @version 1.0(September, 13, 2022)
  */
 
-/*
- * Jaxon teBoekhorst
- * 13 September 2022
- * WEBD3201  
- */
-
 ob_start();
 if (session_id() == "") {
     session_start();
@@ -40,6 +34,10 @@ require_once("./includes/functions.php");
 <!-- <?php echo $file ?> -->
 <!-- <?php echo $desc ?> -->
 
+<?php
+$message = flash_message();
+?>
+
 <!doctype html>
 <html lang="en">
 
@@ -59,11 +57,6 @@ require_once("./includes/functions.php");
 
     <!-- Custom styles for this template -->
     <link href="./css/styles.css" rel="stylesheet">
-
-    <?php
-    $message = flash_message();
-    ?>
-
 </head>
 
 <body>

@@ -34,8 +34,7 @@ pg_prepare($conn, "add_client", "INSERT INTO clients(email, salesID, firstName, 
 pg_prepare($conn, "get_calls_client", "SELECT * FROM calls WHERE client_id = $1");
 pg_prepare($conn, "get_calls_salesperson", "SELECT c.email as email ,call_id as id, time FROM calls LEFT JOIN clients c on c.id = calls.client_id WHERE salesid = $1");
 pg_prepare($conn, "add_call", "INSERT INTO calls(client_id, time) VALUES ($1, $2)");
-
-
+pg_prepare($conn, "update_password", "UPDATE users SET password = $1 WHERE Id = $2");
 
 /**
  * Return an object containing query results of the requested user
@@ -79,7 +78,7 @@ function get_sales_people()
  *
  * @param string $email users email
  */
-function get_userId(string $email)
+function get_user_id(string $email)
 {
 	$conn = db_connect();
 	return pg_execute($conn, "get_userId", [$email]);
@@ -149,12 +148,12 @@ function add_salesperson(string $f_name, string $l_name, string $email, string $
  * @param string $phone_ext clients phone number extension
  * @param int $sales_id id of the salesperson to tie this client to
  * @param string $logo_path the path pointing to the logo
- * @return false|resource
+ * @return void
  */
 function add_client(string $f_name, string $l_name, string $email, string $phone_num, string $phone_ext, int $sales_id, string $logo_path)
 {
 	$conn = db_connect();
-	return pg_execute($conn, "add_client", [$email, $sales_id, $f_name, $l_name, $phone_num, $phone_ext, $logo_path]);
+	pg_execute($conn, "add_client", [$email, $sales_id, $f_name, $l_name, $phone_num, $phone_ext, $logo_path]);
 }
 
 /**
@@ -191,4 +190,17 @@ function add_call(int $client_id)
 {
 	$conn = db_connect();
 	return pg_execute($conn, "add_call", [$client_id, date("Y-m-d H:i:s")]);
+}
+
+/**
+ * encrypts and updates a users password
+ *
+ * @param string $password the new password
+ * @param int $id the id of the user being updated
+ * @return void
+ */
+function update_password(string $password, int $id) {
+	$password = password_hash($password, PASSWORD_BCRYPT);
+	$conn = db_connect();
+	pg_execute($conn, "update_password", [$password, $id]);
 }

@@ -49,28 +49,28 @@ $logo_ext = pathinfo($logo_name, PATHINFO_EXTENSION);
 if ($user_type == 'a') {
 	// get selected user and their id
 	$current_salesperson = $_SESSION['selected_salesperson'] ?? 'jax.tebs+webd3201salesperson@outlook.com';
-	$current_user_id = get_userId($current_salesperson);
+	$current_user_id = get_user_id($current_salesperson);
 	$current_user_id = pg_fetch_result($current_user_id, '0', 'Id');
 } else {
 	$current_salesperson = $user;
 	$current_user_id = $user_id;
 }
 
-// client message
+// error message for validation
 $error_message = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	if (isset($_POST['btnSalesperson'])) {
 		$current_salesperson = $_POST['salesperson'];
 		$_SESSION['selected_salesperson'] = $current_salesperson;
-		$current_user_id = get_userId($current_salesperson);
+		$current_user_id = get_user_id($current_salesperson);
 		$current_user_id = pg_fetch_result($current_user_id, '0', 'Id');
 	} else if (isset($_POST['btnPage'])) {
 	} else {
 		if ($user_type == 'a') {
 			// get selected user and their id
 			$current_salesperson = $_SESSION['selected_salesperson'] ?? 'jax.tebs+webd3201salesperson@outlook.com';
-			$current_user_id = get_userId($current_salesperson);
+			$current_user_id = get_user_id($current_salesperson);
 			$current_user_id = pg_fetch_result($current_user_id, '0', 'Id');
 		}
 
