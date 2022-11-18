@@ -58,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$_SESSION['selected_salesperson'] = $current_salesperson;
 		$current_user_id = get_userId($current_salesperson);
 		$current_user_id = pg_fetch_result($current_user_id, '0', 'Id');
+	} else if (isset($_POST['btnPage'])) {
 	} else {
 		if ($user_type == 'a') {
 			// get selected user and their id
@@ -97,8 +98,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		}
 
 		// validate phone number
-		$pnum = preg_replace("/[^0-9]/", "", $client_phone_num);
-		if (strlen($pnum) != 10) {
+		$phone_num = preg_replace("/[^0-9]/", "", $client_phone_num);
+		if (strlen($phone_num) != 10) {
 			$valid_client = false;
 			$client_phone_num = '';
 			$error_message .= "Error: Invalid Phone Number<br/>";
@@ -186,21 +187,22 @@ if (pg_num_rows($clients) == 0) {
 		]
 	);
 
-	// TODO separate button from other buttons
+	// display page selector
 	echo "<form class='form-control border-0' method='POST'>
-<p>Page:</p>
-<select class='form-control mb-auto' style='width: auto; height: auto' name='page'>";
+			<p>Page:</p>
+			<select class='form-control mb-auto' style='width: auto; height: auto' name='page'>";
 
+	// generate all selections
 	for ($i = 0;
-		 $i <= ceil((pg_num_rows($clients) / 10));
+		 $i <= floor(((pg_num_rows($clients) - 1) / RESULTS_PER_PAGE));
 		 $i++) {
 		$selected_page = $i + 1;
 		echo "<option value='$selected_page'>$selected_page</option>";
 	}
 
 	echo "</select>
-	<button class='btn btn-primary' type='submit'>Submit</button>
-</form>";
+	<button class='btn btn-primary' type='submit' name='btnPage'>Submit</button>
+	</form>";
 }
 
 // Create new clients
@@ -246,8 +248,15 @@ echo display_form(
 			"label" => "Phone Number Ext. ",
 			"class" => "form-control"
 		],
+		[
+			"type"=>"file",
+			"name"=>"file_name",
+			"class"=>"form-control-file",
+			"other"=>"id='file_upload'"
+		],
 		"appended" => "
-        <button class='btn btn-lg btn-primary btn-block' type='submit'>Create Client</button>
+		<label class='form-text'>Select Client Logo</label>
+		<button class='btn btn-lg btn-primary btn-block' type='submit'>Create Client</button>
         "
 	]
 );

@@ -10,9 +10,11 @@
  */
 
 /***** COOKIES *****/
+/***/
 const COOKIE_LIFESPAN = "2592000";
 
 /***** USER TYPES *****/
+/***/
 const ADMIN = "s";
 const AGENT = "a";
 const CLIENT = "c";
@@ -20,6 +22,7 @@ const PENDING = "p";
 const DISABLED = "d";
 
 /***** DATABASE CONSTANTS *****/
+/***/
 const DB_HOST = "127.0.0.1";
 const DATABASE = "teboekhorstj_db";
 const DB_ADMIN = "teboekhorstj";
@@ -27,5 +30,5 @@ const DB_PORT = "5432";
 const DB_PASSWORD = "100821229";
 
 /***** OTHER CONSTANTS *****/
-
-const PAGE_RESULTS = 2;
+/** This is for the amount of results per table page */
+const RESULTS_PER_PAGE = 10;

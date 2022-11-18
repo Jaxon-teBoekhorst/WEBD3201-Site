@@ -31,8 +31,10 @@ pg_prepare($conn, "check_for_client", "SELECT Id FROM clients WHERE email = $1")
 pg_prepare($conn, "check_for_salesperson", "SELECT Id FROM users WHERE EmailAddress = $1");
 pg_prepare($conn, "add_user", "INSERT INTO users(EmailAddress, Password, FirstName, LastName, LastAccess, EnrolDate, Enabled, Type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)");
 pg_prepare($conn, "add_client", "INSERT INTO clients(email, salesID, firstName, lastName, phoneNum, phoneExt) VALUES ($1, $2, $3, $4, $5, $6)");
-pg_prepare($conn, "get_calls", "SELECT * FROM calls WHERE client_id = $1");
+pg_prepare($conn, "get_calls_client", "SELECT * FROM calls WHERE client_id = $1");
+pg_prepare($conn, "get_calls_salesperson", "SELECT c.email as email ,call_id as id, time FROM calls LEFT JOIN clients c on c.id = calls.client_id WHERE salesid = $1");
 pg_prepare($conn, "add_call", "INSERT INTO calls(client_id, time) VALUES ($1, $2)");
+
 
 
 /**
@@ -160,10 +162,22 @@ function add_client(string $f_name, string $l_name, string $email, string $phone
  * @param int $client_id
  * @return false|resource
  */
-function get_calls(int $client_id)
+function get_calls_client(int $client_id)
 {
 	$conn = db_connect();
-	return pg_execute($conn, "get_calls", [$client_id]);
+	return pg_execute($conn, "get_calls_client", [$client_id]);
+}
+
+/**
+ * retrieve all calls that the requested salesperson has in the database
+ *
+ * @param int $sales_id
+ * @return false|resource
+ */
+function get_calls_salesperson(int $sales_id)
+{
+	$conn = db_connect();
+	return pg_execute($conn, "get_calls_salesperson", [$sales_id]);
 }
 
 /**

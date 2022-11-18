@@ -24,6 +24,7 @@ $user = $_SESSION["current_user"] ?? "";
 $user_type = $user != "" ? $_SESSION["user_type"] : "";
 $user_id = $user != "" ? $_SESSION["user_id"] : "";
 $selected_client = $_POST['current_client'] ?? '';
+$page = $_POST['page'] ?? 1;
 
 if (!($user_type == 'a' || $user_type == 's')) {
 	set_message('Sorry, You do not have permission to use this page');
@@ -48,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$_SESSION['selected_salesperson'] = $current_salesperson;
 		$current_user_id = get_userId($current_salesperson);
 		$current_user_id = pg_fetch_result($current_user_id, '0', 'Id');
+	} else if (isset($_POST['btnPage'])) {
 	} else {
 		if ($user_type == 'a') {
 			// get selected user and their id
@@ -60,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		if (!add_call($selected_client)) {
 			set_message("Failed to add a call for $selected_client");
 			redirect("calls.php");
-		}else{
+		} else {
 			set_message("Success!");
 			redirect("calls.php");
 		}
@@ -99,6 +101,7 @@ if ($user_type == 'a') {
 	]);
 }
 
+// get all clients from the database
 $result = get_clients($current_user_id);
 $clients = [];
 for ($i = 0; $i < pg_num_rows($result); $i++) {
@@ -106,6 +109,7 @@ for ($i = 0; $i < pg_num_rows($result); $i++) {
 	$clients[] = ["$client[3] $client[4] ($client[1])", $client[0]];
 }
 
+// add call selection and button
 if (sizeof($clients) > 0) {
 	// generate dropdown selections
 	$dropdown = "<select class='form-control mb-auto' style='width: auto; height: auto' name='current_client'>";
@@ -121,10 +125,13 @@ if (sizeof($clients) > 0) {
 	}
 	$dropdown .= "</select>";
 
+	// display the add call button
 	echo display_form([
 		"appended" => $dropdown .
 			"<button class='btn btn-lg btn-primary btn-block mt-3 mb-5' type='submit'>Add Call</button>"
 	]);
+
+// the sales person has no clients
 } else {
 	if ($user_type == 'a') {
 		echo "<p class='h4 text-center mb-5'>The selected salesperson does not have any clients</p>";
@@ -133,19 +140,34 @@ if (sizeof($clients) > 0) {
 	}
 }
 
-foreach ($clients as $client) {
-	echo "<p class='h5'>$client[0]</p>";
-	echo "<ul>";
-	$calls = get_calls($client[1]);
-	if (pg_num_rows($calls) == 0) {
-		echo "This client has no calls on record";
-	} else {
-		for ($i = 0; $i < pg_num_rows($calls); $i++) {
-			$call = pg_fetch_row($calls, $i);
-			echo "<li>$call[0] - $call[2]</li>";
-		}
-	}
-	echo "</ul>";
+// display calls in a paged table
+$sales_calls = get_calls_salesperson($current_user_id);
+echo display_table([
+	[
+		"email" => "Client Email",
+		"id" => "Call ID",
+		"time" => "Call Time"
+	],
+	$sales_calls,
+	pg_num_rows($sales_calls),
+	$page
+]);
+
+// display page selector
+echo "<form class='form-control border-0' method='POST'>
+			<p>Page:</p>
+			<select class='form-control mb-auto' style='width: auto; height: auto' name='page'>";
+
+// generate all selections
+for ($i = 0;
+	 $i <= floor(((pg_num_rows($sales_calls) - 1) / RESULTS_PER_PAGE));
+	 $i++) {
+	$selected_page = $i + 1;
+	echo "<option value='$selected_page'>$selected_page</option>";
 }
+
+echo "</select>
+	<button class='btn btn-primary' type='submit' name='btnPage'>Submit</button>
+	</form>";
 
 require_once('includes/footer.php');

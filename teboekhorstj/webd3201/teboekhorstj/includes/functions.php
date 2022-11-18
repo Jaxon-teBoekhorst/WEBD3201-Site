@@ -138,7 +138,7 @@ function sign_in(string $email, string $password)
  */
 function log_sign_in(string $email, bool $success)
 {
-	$file_name = "./logs/" . date("Ymd") . "_log.txt";
+	$file_name = "./logs/" . date("Y-m-d") . "_log.txt";
 	$message = $success ?
 		"Sign in success at " . date("h:ia") . ". User " . $email . "\n" :
 		"Sign in failed at " . date("h:ia") . ". Email provided " . $email . "\n";
@@ -156,7 +156,7 @@ function log_sign_in(string $email, bool $success)
  */
 function log_sign_out(string $email)
 {
-	$file_name = "./logs/" . date("Ymd") . "_log.txt";
+	$file_name = "./logs/" . date("Y-m-d") . "_log.txt";
 	$message = $email . "successfully signed out at " . date("h:ia") . "\n";
 
 	$file = fopen($file_name, "a");
@@ -193,7 +193,7 @@ function log_sign_out(string $email)
 function display_form(array $form): string
 {
 	$self = $_SERVER['PHP_SELF'];
-	$formFinal = "<form action='$self' method='POST' class='form-signin align-content-center'>";
+	$formFinal = "<form action='$self' method='POST' class='form-signin align-content-center' enctype='multipart/form-data'>";
 	if (isset($form['prepended'])) {
 		$formFinal .= $form['prepended'];
 	}
@@ -221,7 +221,10 @@ function display_form(array $form): string
  * This function take an array and will turn it into an html table
  *
  * @param array $table this contains the column information Format:
- *                        [[headers], query result, amount of clients, selected page]
+ *                        [[headers], <br/>
+ * 						   query result,  <br/>
+ * 						   amount of rows,  <br/>
+ * 						   selected page]
  * @return string html string that contains the table data
  */
 function display_table(array $table): string
@@ -244,9 +247,9 @@ function display_table(array $table): string
 	}
 
 	/** Start point of the page loop */
-	$start = PAGE_RESULTS * $page - 1;
+	$start = RESULTS_PER_PAGE * $page - 1;
 	/** End point of the page loop */
-	$end = $start + PAGE_RESULTS;
+	$end = $start + RESULTS_PER_PAGE;
 
 	if ($end >= $max_results) {
 		// subtract one for array offset
