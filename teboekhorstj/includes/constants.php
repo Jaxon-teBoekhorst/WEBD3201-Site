@@ -39,3 +39,8 @@ const IMAGE_HEADERS = ['logoPath'];
 const MAX_FILE_SIZE = 3000000;
 const MAX_SIZE_STR = '3MB';
 const ACCEPTED_FILE_TYPES = ['jpg', 'jpeg', 'jpe', 'png', 'gif', 'svg'];
+
+/***** VALIDATION CONSTANTS *****/
+const PASSWORD_MIN_SIZE = 3;
+const LONG_MAX_SIZE = 255;
+const SHORT_MAX_SIZE = 128;

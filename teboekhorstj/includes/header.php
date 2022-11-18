@@ -115,6 +115,12 @@ require_once("./includes/functions.php");
                                 Calls
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?php echo is_active_page('change-password.php') ?>"
+                               href="./change-password.php">
+                                Change Password
+                            </a>
+                        </li>
                     <?php endif; ?>
                 </ul>
             </div>

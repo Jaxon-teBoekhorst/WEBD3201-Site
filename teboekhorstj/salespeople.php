@@ -52,15 +52,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$error_message .= "Please fill all fields<br/>";
 		}
 
-		if (strlen($f_name) > 128) {
+		if (strlen($f_name) > SHORT_MAX_SIZE) {
 			$valid_salesperson = false;
 			$error_message .= "Error: First Name too long<br/>";
 		}
-		if (strlen($l_name) > 128) {
+		if (strlen($l_name) > SHORT_MAX_SIZE) {
 			$valid_salesperson = false;
 			$error_message .= "Error: Last Name too long<br/>";
 		}
-		if (strlen($email) > 255) {
+		if (strlen($email) > LONG_MAX_SIZE) {
 			$valid_salesperson = false;
 			$error_message .= "Error: Email too long<br/>";
 		}
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$error_message .= "Error: Invalid Email Address<br/>";
 		}
 
-		if (strlen($password) < 8 || strlen($password) > 255) {
+		if (strlen($password) < PASSWORD_MIN_SIZE || strlen($password) > LONG_MAX_SIZE) {
 			$valid_salesperson = false;
 			$error_message .= "The password must be between 8 and 255 characters long<br/>";
 			$password = '';
