@@ -9,6 +9,9 @@
  * @version 1.0(September, 13, 2022)
  */
 
+require_once('./includes/functions/logging.php');
+require_once('./includes/functions/messages.php');
+
 /**
  * redirects the site to a new page and flush the output buffer
  *
@@ -21,58 +24,6 @@ function redirect(string $url)
 	ob_flush();
 }
 
-/**
- * Place the passed message in the $_SESSION array
- *
- * @param string $message message to use
- * @return void
- */
-function set_message(string $message)
-{
-	$_SESSION['message'] = $message;
-}
-
-/**
- * Retrieve message from the $_SESSION array
- *
- * @return string
- */
-function get_message(): string
-{
-	return $_SESSION['message'];
-}
-
-/**
- * check if there is a message in the $_SESSION array
- *
- * @return bool
- */
-function is_message(): bool
-{
-	return isset($_SESSION['message']);
-}
-
-/**
- * clear the message from the $_SESSION array
- *
- * @return void
- */
-function clear_message()
-{
-	unset($_SESSION['message']);
-}
-
-/**
- * gets the message and clears the value in the session
- *
- * @return string
- */
-function flash_message(): string
-{
-	$message = is_message() ? get_message() : "";
-	clear_message();
-	return $message;
-}
 
 /**
  * check if any user is logged in
@@ -128,52 +79,6 @@ function sign_in(string $email, string $password)
 		redirect("sign-in.php");
 	}
 }
-
-/**
- * log sign in attempts to log files that are stored with the date as the log files name
- *
- * @param string $email email of the user attempting to sign in
- * @param bool $success whether the user successfully signed in
- * @return void
- */
-function log_sign_in(string $email, bool $success)
-{
-	$file_name = "./logs/" . date("Y-m-d") . "_log.txt";
-	$message = $success ?
-		"$email successfully signed in at " . date("h:ia") . '\n' :
-		"$email failed to sign in at " . date("h:ia") . '\n';
-
-	$file = fopen($file_name, "a");
-	fwrite($file, $message);
-	fclose($file);
-}
-
-/**
- * log sign-outs to log files that are stored with the date as the log files name
- *
- * @param string $email email of the user attempting to sign in
- * @return void
- */
-function log_sign_out(string $email)
-{
-	$file_name = "./logs/" . date("Y-m-d") . "_log.txt";
-	$message = $email . " successfully signed out at " . date("h:ia") . "\n";
-
-	$file = fopen($file_name, "a");
-	fwrite($file, $message);
-	fclose($file);
-}
-
-function log_password_change(string $email)
-{
-	$file_name = "./logs/" . date("Y-m-d") . "_log.txt";
-	$message = $email . " successfully changed their password at " . date("h:ia") . "\n";
-
-	$file = fopen($file_name, "a");
-	fwrite($file, $message);
-	fclose($file);
-}
-
 
 /**
  * create a string of that contains the html to create a form
@@ -319,4 +224,42 @@ function format_phone(string $number): string
 	} else {
 		return $number;
 	}
+}
+
+/**
+ * Generate a cryptographically secure random password
+ *
+ * @param int $length
+ * @return string the generated password
+ * @throws RangeException thrown when the passed length is too small
+ * @throws Exception thrown by random_int function
+ */
+function gen_rand_pass(int $length = 12): string
+{
+	// basic charsets
+	define("chars", 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+	define("spec_chars", "!@#$%^&*()_+,.<>;`~");
+	define("digits", "1234567890");
+
+	// merge all basic charsets lists with reg chars upper and lower case
+	$char_set = chars . strtolower(chars) . spec_chars . digits;
+
+	if ($length < 1) {
+		throw new RangeException("Length must be an integer greater than 0");
+	}
+
+
+	// array of the characters to return
+	$password = [];
+	// find the length of the charset and offset to 0 start
+	$max = strlen($char_set) - 1;
+
+
+	for ($i = 0; $i < $length; $i++) {
+		// append random char to password
+		$password [] = $char_set[random_int(0, $max)];
+	}
+
+	// return the final password
+	return implode('', $password);
 }

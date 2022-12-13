@@ -35,6 +35,7 @@ pg_prepare($conn, "get_calls_client", "SELECT * FROM calls WHERE client_id = $1"
 pg_prepare($conn, "get_calls_salesperson", "SELECT c.email as email ,call_id as id, time FROM calls LEFT JOIN clients c on c.id = calls.client_id WHERE salesid = $1");
 pg_prepare($conn, "add_call", "INSERT INTO calls(client_id, time) VALUES ($1, $2)");
 pg_prepare($conn, "update_password", "UPDATE users SET password = $1 WHERE Id = $2");
+pg_prepare($conn, "check_for_user", "SELECT Id FROM users WHERE emailaddress = $1");
 
 /**
  * Return an object containing query results of the requested user
@@ -107,6 +108,19 @@ function check_for_client(string $email): bool
 	$conn = db_connect();
 	$client = pg_execute($conn, "check_for_client", [$email]);
 	return pg_num_rows($client) == 1;
+}
+
+/**
+ * Check if a user with a specific email exists
+ *
+ * @param string $email user being check for
+ * @return bool whether the user exists or not
+ */
+function check_for_user(string $email): bool
+{
+	$conn = db_connect();
+	$user = pg_execute($conn, "check_for_user", [$email]);
+	return pg_num_rows($user) == 1;
 }
 
 /**
