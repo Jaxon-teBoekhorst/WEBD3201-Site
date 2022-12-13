@@ -11,31 +11,44 @@
  * @version 1.0(September, 13, 2022)
  */
 
-
+// page comments
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 $title = "WEBD3201 Login Page";
 $author = "Jaxon teBoekhorst";
 $date = "13 September 2022";
 $file = "./sign-in.php";
 $desc = "User sign in";
 
+// header include
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 require_once("./includes/header.php");
 
+// check that a user is signed in
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 if (is_logged_in()) {
     redirect("./dashboard.php");
 }
 
+// data inputted to a form
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // validate that data was entered
     if (isset($_POST["inputEmail"]) && isset($_POST["inputPassword"])) {
+        // get info from post
         $email = $_POST["inputEmail"];
         $password = $_POST["inputPassword"];
 
+        // clear post
         $_POST["inputEmail"] = "";
         $_POST["inputPassword"] = "";
 
+        // attempt to sign in
         sign_in($email, $password);
     }
 }
 
+// display the input form
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo display_form(
     [
         "prepended" => "
@@ -70,4 +83,6 @@ echo "
 </div>
 ";
 
-require "./includes/footer.php";
+// include footer
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+require_once("./includes/footer.php");

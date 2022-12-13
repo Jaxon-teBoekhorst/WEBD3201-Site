@@ -12,27 +12,39 @@
  * @version 1.0(October, 04, 2022)
  */
 
+// page comments
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 $title = "WEBD3201 Calls Page";
 $author = "Jaxon teBoekhorst";
 $date = "04 October 2022";
 $file = "./calls.php";
 $desc = "View and add new calls";
 
+// header include
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 require_once("./includes/header.php");
 
+// variables from post
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 $user = $_SESSION["current_user"] ?? "";
 $user_type = $user != "" ? $_SESSION["user_type"] : "";
 $user_id = $user != "" ? $_SESSION["user_id"] : "";
 $selected_client = $_POST['current_client'] ?? '';
 $page = $_POST['page'] ?? 1;
 
+// check user access based on user type
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 if (!($user_type == 'a' || $user_type == 's')) {
 	set_message('Sorry, You do not have permission to use this page');
 	redirect('./sign-in.php');
 }
 
+// display any messages
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo "<h1 class='h4 mb-3 font-weight-normal text-center'>$message</h1>";
 
+// Get salesperson info (selected salesperson if the user is an admin)
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 if ($user_type == 'a') {
 	// get selected user and their id
 	$current_salesperson = $_SESSION['selected_salesperson'] ?? 'jax.tebs+webd3201salesperson@outlook.com';
@@ -43,14 +55,23 @@ if ($user_type == 'a') {
 	$current_user_id = $user_id;
 }
 
+// Submitted data
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // update salesperson info if that button was pressed
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	if (isset($_POST['btnSalesperson'])) {
 		$current_salesperson = $_POST['salesperson'];
 		$_SESSION['selected_salesperson'] = $current_salesperson;
 		$current_user_id = get_user_id($current_salesperson);
 		$current_user_id = pg_fetch_result($current_user_id, '0', 'Id');
+    // do nothing if page select button pressed (handled elsewhere)
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	} else if (isset($_POST['btnPage'])) {
+    // add call button pressed
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	} else {
+        // get selected user info
 		if ($user_type == 'a') {
 			// get selected user and their id
 			$current_salesperson = $_SESSION['selected_salesperson'] ?? 'jax.tebs+webd3201salesperson@outlook.com';
@@ -69,7 +90,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 }
 
-// check if the user is an admin
+// render select salesperson drop down if user is admin
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 if ($user_type == 'a') {
 	// get a list of salespeople emails
 	$result = get_sales_people();
@@ -101,7 +123,8 @@ if ($user_type == 'a') {
 	]);
 }
 
-// get all clients from the database
+// render client selector
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 $result = get_clients($current_user_id);
 $clients = [];
 for ($i = 0; $i < pg_num_rows($result); $i++) {
@@ -141,6 +164,7 @@ if (sizeof($clients) > 0) {
 }
 
 // display calls in a paged table
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo ("<p class='h3'>Calls</p>");
 $sales_calls = get_calls_salesperson($current_user_id);
 echo display_table([

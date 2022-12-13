@@ -11,35 +11,44 @@
  * @version 1.0(September, 13, 2022)
  */
 
+// page comments
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 $title = "WEBD3201 Dashboard Page";
 $author = "Jaxon teBoekhorst";
 $date = "13 September 2022";
 $file = "./dashboard.php";
 $desc = "Display a users dashboard";
 
+// header include
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 require_once("./includes/header.php");
 
+// validate someone is signed in
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 if (!is_logged_in()) {
     redirect("./sign-in.php");
 }
-?>
-<h1 class="h2">Dashboard</h1>
-<h2><?php echo $message ?></h2>
-<div class="btn-toolbar mb-2 mb-md-0">
-    <div class="btn-group mr-2">
-        <button class="btn btn-sm btn-outline-secondary">Share</button>
-        <button class="btn btn-sm btn-outline-secondary">Export</button>
-    </div>
-    <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
-        <span data-feather="calendar"></span>
-        This week
-    </button>
-</div>
 
-<h2>Section title</h2>
-<div class="table-responsive">
-    <table class="table table-striped table-sm">
-        <thead>
+// display dashboard page
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+?>
+    <h1 class="h2">Dashboard</h1>
+    <h2><?php echo $message ?></h2>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group mr-2">
+            <button class="btn btn-sm btn-outline-secondary">Share</button>
+            <button class="btn btn-sm btn-outline-secondary">Export</button>
+        </div>
+        <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+            <span data-feather="calendar"></span>
+            This week
+        </button>
+    </div>
+
+    <h2>Section title</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-sm">
+            <thead>
             <tr>
                 <th>#</th>
                 <th>Header</th>
@@ -47,8 +56,8 @@ if (!is_logged_in()) {
                 <th>Header</th>
                 <th>Header</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             <tr>
                 <td>1,001</td>
                 <td>Lorem</td>
@@ -161,9 +170,10 @@ if (!is_logged_in()) {
                 <td>in</td>
                 <td>libero</td>
             </tr>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
 
-    <?php
-    require "./includes/footer.php";
-    ?>
+<?php
+// footer include
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+require "./includes/footer.php";

@@ -11,17 +11,24 @@
  * @version 1.0(December, 1, 2022)
  */
 
+// page comments
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 $title = "WEBD3201 Reset Password";
 $author = "Jaxon teBoekhorst";
 $date = "1 December 2022";
 $file = "./reset.php";
 $desc = "Password Reset Request, Sends an email to reset password to the requested email";
 
+// header include
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 require_once('./includes/header.php');
 
+// get values from server
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 $email = $_POST['user_email'] ?? '';
 
-// TODO form for email input
+// render page
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo display_form([
 	[
 		"type" => "email",
@@ -35,6 +42,7 @@ echo display_form([
 ]);
 
 // validate email is valid
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
 	// validate the user exists
 	if (check_for_user($email)) {
@@ -48,4 +56,6 @@ if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
 	redirect('./sign-in.php');
 }
 
+// footer include
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 require_once("./includes/footer.php");

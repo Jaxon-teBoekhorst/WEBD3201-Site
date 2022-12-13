@@ -12,26 +12,39 @@
  * @version 1.0(September, 13, 2022)
  */
 
+// page comments
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 $title = "WEBD3201 Calls Page";
 $author = "Jaxon teBoekhorst";
 $date = "04 October 2022";
 $file = "./clients.php";
 $desc = "display and create new clients for salespeople";
 
+// header include
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 require_once("./includes/header.php");
 
+// get userinfo from server
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 $user = $_SESSION["current_user"] ?? "";
 $user_type = $user != "" ? $_SESSION["user_type"] : "";
 $user_id = $user != "" ? $_SESSION["user_id"] : "";
 
+// check if user has permission to be on this page
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 if (!($user_type == 'a' || $user_type == 's')) {
 	set_message('Sorry, You do not have permission to use this page');
 	redirect('./sign-in.php');
 }
 
+// display a message
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo "<h1 class='h4 mb-3 font-weight-normal text-center'>$message</h1>";
 
-// get all values from post
+// get data from server
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// post values
 $client_f_name = $_POST['client_f_name'] ?? '';
 $client_l_name = $_POST['client_l_name'] ?? '';
 $client_email = $_POST['client_email'] ?? '';
@@ -46,6 +59,8 @@ $logo_error = $_FILES['logo_name']['error'] ?? '';
 $logo_size = $_FILES['logo_name']['size'] ?? '';
 $logo_ext = pathinfo($logo_name, PATHINFO_EXTENSION);
 
+// get salesperson info (selected salesperson for admins)
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 if ($user_type == 'a') {
 	// get selected user and their id
 	$current_salesperson = $_SESSION['selected_salesperson'] ?? 'jax.tebs+webd3201salesperson@outlook.com';
@@ -56,17 +71,26 @@ if ($user_type == 'a') {
 	$current_user_id = $user_id;
 }
 
+// data entered in form
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // error message for validation
 $error_message = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // select salesperson button
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	if (isset($_POST['btnSalesperson'])) {
 		$current_salesperson = $_POST['salesperson'];
 		$_SESSION['selected_salesperson'] = $current_salesperson;
 		$current_user_id = get_user_id($current_salesperson);
 		$current_user_id = pg_fetch_result($current_user_id, '0', 'Id');
+    // page select button (all logic handled elsewhere)
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	} else if (isset($_POST['btnPage'])) {
-	} else {
+	// create new client button
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    } else {
+        // get selected salesperson info if user is an admin
 		if ($user_type == 'a') {
 			// get selected user and their id
 			$current_salesperson = $_SESSION['selected_salesperson'] ?? 'jax.tebs+webd3201salesperson@outlook.com';
@@ -85,6 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$error_message .= "Please fill all fields<br/>";
 		}
 
+        // validate field lengths
 		if (strlen($client_f_name) > 128) {
 			$valid_salesperson = false;
 			$error_message .= "Error: First Name too long<br/>";
@@ -98,6 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$error_message .= "Error: Email too long<br/>";
 		}
 
+        // check for valid email
 		if (!filter_var($client_email, FILTER_VALIDATE_EMAIL)) {
 			$valid_client = false;
 			$client_email = '';
@@ -121,16 +147,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$error_message .= "A client already exists with that email<br/>";
 		}
 
+        // check for valid file upload (no type check yet)
 		if ($logo_error != 0) {
 			$valid_client = false;
 			$error_message .= "An error has occurred when trying to upload the logo<br/>";
 		}
 
+        // check for valid file type
 		if (!in_array($logo_ext, ACCEPTED_FILE_TYPES)){
 			$valid_client = false;
 			$error_message .= 'The selected file is not an accepted file type<br/>';
 		}
 
+        // check for valid file size
 		if ($logo_size > MAX_FILE_SIZE) {
 			$valid_client = false;
 			$error_message .= sprintf("The selected file is too large, The max size is %s<br/>", MAX_SIZE_STR);
@@ -155,6 +184,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 }
 
+// render select salesperson if the user is an admin
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // check if the user is an admin
 if ($user_type == 'a') {
 	// get a list of salespeople emails
@@ -189,7 +220,8 @@ if ($user_type == 'a') {
 }
 
 
-// display current clients
+// display current clients in a paged table
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 $clients = get_clients($current_user_id);
 
 if (pg_num_rows($clients) == 0) {
@@ -235,6 +267,7 @@ if (pg_num_rows($clients) == 0) {
 }
 
 // Create new clients
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo "<h2 class='h3 mb-3  mt-5 font-weight-normal text-center'> Create New Client</h2>";
 echo display_form(
 	[
@@ -291,4 +324,6 @@ echo display_form(
 
 echo "<p class='h6 font-weight-bold text-center'>$error_message</p>";
 
+// footer include
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 require_once('includes/footer.php');
