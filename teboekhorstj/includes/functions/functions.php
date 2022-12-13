@@ -53,9 +53,10 @@ function sign_in(string $email, string $password)
         $user_pass = pg_fetch_result($user, 0, "Password");
         $enabled = pg_fetch_result($user, 0, "enabled");
 
-        if (!$enabled) {
+        if ($enabled != 't') {
             set_message("Sorry you can't currently sign-in, please talk to HR");
             redirect("./index.php");
+            return;
         }
 
         if ($email == $user_email && password_verify($password, $user_pass)) {
