@@ -9,7 +9,7 @@
  * @version 1.0(December, 1, 2022)
  */
 
-require_once('./includes/functions.php');
+require_once('./includes/functions/functions.php');
 
 /**
  * log sign in attempts to log files that are stored with the date as the log files name

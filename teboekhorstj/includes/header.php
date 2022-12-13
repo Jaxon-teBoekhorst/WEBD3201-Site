@@ -19,22 +19,20 @@ if (!isset($_SESSION["current_user"])) {
     $_SESSION["current_user"] = "";
 }
 
-$user = isset($_SESSION["current_user"]) ? isset($_SESSION["current_user"]) : "";
+$user = $_SESSION["current_user"] ?? "";
 if ($user != '') {
-    $user_type = isset($_SESSION["user_type"]) != "" ? $_SESSION["user_type"] : "";
+    $user_type = $_SESSION["user_type"] ?? "";
 }
 
 require_once("./includes/constants.php");
 require_once("./includes/db.php");
 require_once("./includes/functions/functions.php");
-?>
 
-<!-- <?php echo $author ?> -->
-<!-- <?php echo $date ?> -->
-<!-- <?php echo $file ?> -->
-<!-- <?php echo $desc ?> -->
+echo "<!-- $author -->";
+echo "<!-- $date -->";
+echo "<!-- $file -->";
+echo "<!-- $desc -->";
 
-<?php
 $message = flash_message();
 ?>
 
