@@ -9,33 +9,67 @@
  * @version 1.0(September, 13, 2022)
  */
 
-
 /**
  * generate a pg_connect with connection settings configured
  * @return false|resource
  */
 function db_connect()
 {
-	$format = 'host=%1$s port=%2$s dbname=%3$s user = %4$s password=%5$s';
-	return pg_connect(sprintf($format, DB_HOST, DB_PORT, DATABASE, DB_ADMIN, DB_PASSWORD));
+    $format = 'host=%1$s port=%2$s dbname=%3$s user = %4$s password=%5$s';
+    return pg_connect(sprintf($format, DB_HOST, DB_PORT, DATABASE, DB_ADMIN, DB_PASSWORD));
 }
 
 $conn = db_connect();
 
-pg_prepare($conn, "user_select", "SELECT * FROM users WHERE EmailAddress = $1");
-pg_prepare($conn, "update_accessed", "UPDATE users SET LastAccess = $1 WHERE Id = $2");
-pg_prepare($conn, "get_sales_people", "SELECT * FROM users WHERE Type = 's'");
-pg_prepare($conn, "get_userId", "SELECT Id From users Where EmailAddress = $1");
-pg_prepare($conn, "get_clients", "SELECT * FROM clients WHERE salesId = $1");
-pg_prepare($conn, "check_for_client", "SELECT Id FROM clients WHERE email = $1");
-pg_prepare($conn, "check_for_salesperson", "SELECT Id FROM users WHERE EmailAddress = $1");
-pg_prepare($conn, "add_user", "INSERT INTO users(EmailAddress, Password, FirstName, LastName, LastAccess, EnrolDate, Enabled, Type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)");
-pg_prepare($conn, "add_client", "INSERT INTO clients(email, salesID, firstName, lastName, phoneNum, phoneExt, logopath) VALUES ($1, $2, $3, $4, $5, $6, $7)");
-pg_prepare($conn, "get_calls_client", "SELECT * FROM calls WHERE client_id = $1");
-pg_prepare($conn, "get_calls_salesperson", "SELECT c.email as email ,call_id as id, time FROM calls LEFT JOIN clients c on c.id = calls.client_id WHERE salesid = $1");
-pg_prepare($conn, "add_call", "INSERT INTO calls(client_id, time) VALUES ($1, $2)");
-pg_prepare($conn, "update_password", "UPDATE users SET password = $1 WHERE Id = $2");
-pg_prepare($conn, "check_for_user", "SELECT Id FROM users WHERE emailaddress = $1");
+// user statements
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+pg_prepare($conn, "user_select", "
+                SELECT * FROM users WHERE EmailAddress = $1 ORDER BY id ASC");
+pg_prepare($conn, "update_accessed", "
+                UPDATE users SET LastAccess = $1 WHERE Id = $2");
+pg_prepare($conn, "get_userId", "
+                SELECT Id From users Where EmailAddress = $1 ORDER BY id ASC");
+pg_prepare($conn, "add_user", "
+                INSERT INTO users(EmailAddress, Password, FirstName, LastName, LastAccess, EnrolDate, Enabled, Type) 
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)");
+pg_prepare($conn, "update_password", "
+                UPDATE users SET password = $1 WHERE Id = $2");
+pg_prepare($conn, "check_for_user", "
+                SELECT Id FROM users WHERE emailaddress = $1");
+
+// salesperson statements
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+pg_prepare($conn, "get_sales_people", "
+                SELECT * FROM users WHERE Type = 's' ORDER BY id ASC");
+pg_prepare($conn, "check_for_salesperson", "
+                SELECT Id FROM users WHERE EmailAddress = $1 ORDER BY id ASC");
+
+// client statements
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+pg_prepare($conn, "get_clients", "
+                SELECT * FROM clients WHERE salesId = $1 ORDER BY id ASC");
+pg_prepare($conn, "check_for_client", "
+                SELECT Id FROM clients WHERE email = $1 ORDER BY id ASC");
+pg_prepare($conn, "add_client", "
+                INSERT INTO clients(email, salesID, firstName, lastName, phoneNum, phoneExt, logopath) 
+                VALUES ($1, $2, $3, $4, $5, $6, $7)");
+
+// call statements
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+pg_prepare($conn, "add_call", "
+                INSERT INTO calls(client_id, time) VALUES ($1, $2)");
+pg_prepare($conn, "get_calls_client", "
+                SELECT * FROM calls WHERE client_id = $1 ORDER BY call_id ASC");
+pg_prepare($conn, "get_calls_salesperson", "
+                SELECT c.email as email ,call_id as id, time FROM calls 
+                LEFT JOIN clients c ON c.id = calls.client_id WHERE salesid = $1 ORDER BY call_id ASC");
+
+// activation status statements
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+pg_prepare($conn, "activate_user", "
+                UPDATE users SET enabled = 'true' WHERE emailaddress = $1");
+pg_prepare($conn, "deactivate_user", "
+                UPDATE users SET enabled = 'false' WHERE emailaddress = $1");
 
 /**
  * Return an object containing query results of the requested user
@@ -46,8 +80,8 @@ pg_prepare($conn, "check_for_user", "SELECT Id FROM users WHERE emailaddress = $
  */
 function user_select(string $email)
 {
-	$conn = db_connect();
-	return pg_execute($conn, "user_select", [$email]);
+    $conn = db_connect();
+    return pg_execute($conn, "user_select", [$email]);
 }
 
 /**
@@ -58,8 +92,8 @@ function user_select(string $email)
  */
 function update_accessed(int $id)
 {
-	$conn = db_connect();
-	pg_execute($conn, "update_accessed", [date("Y-m-d H:i:s"), $id]);
+    $conn = db_connect();
+    pg_execute($conn, "update_accessed", [date("Y-m-d H:i:s"), $id]);
 }
 
 /**
@@ -69,8 +103,8 @@ function update_accessed(int $id)
  */
 function get_sales_people()
 {
-	$conn = db_connect();
-	return pg_execute($conn, "get_sales_people", []);
+    $conn = db_connect();
+    return pg_execute($conn, "get_sales_people", []);
 }
 
 /**
@@ -81,8 +115,8 @@ function get_sales_people()
  */
 function get_user_id(string $email)
 {
-	$conn = db_connect();
-	return pg_execute($conn, "get_userId", [$email]);
+    $conn = db_connect();
+    return pg_execute($conn, "get_userId", [$email]);
 }
 
 /**
@@ -93,8 +127,8 @@ function get_user_id(string $email)
  */
 function get_clients(string $salesperson)
 {
-	$conn = db_connect();
-	return pg_execute($conn, "get_clients", [$salesperson]);
+    $conn = db_connect();
+    return pg_execute($conn, "get_clients", [$salesperson]);
 }
 
 /**
@@ -105,9 +139,9 @@ function get_clients(string $salesperson)
  */
 function check_for_client(string $email): bool
 {
-	$conn = db_connect();
-	$client = pg_execute($conn, "check_for_client", [$email]);
-	return pg_num_rows($client) == 1;
+    $conn = db_connect();
+    $client = pg_execute($conn, "check_for_client", [$email]);
+    return pg_num_rows($client) == 1;
 }
 
 /**
@@ -118,9 +152,9 @@ function check_for_client(string $email): bool
  */
 function check_for_user(string $email): bool
 {
-	$conn = db_connect();
-	$user = pg_execute($conn, "check_for_user", [$email]);
-	return pg_num_rows($user) == 1;
+    $conn = db_connect();
+    $user = pg_execute($conn, "check_for_user", [$email]);
+    return pg_num_rows($user) == 1;
 }
 
 /**
@@ -131,9 +165,9 @@ function check_for_user(string $email): bool
  */
 function check_for_salesperson(string $email): bool
 {
-	$conn = db_connect();
-	$salesperson = pg_execute($conn, "check_for_salesperson", [$email]);
-	return pg_num_rows($salesperson) == 1;
+    $conn = db_connect();
+    $salesperson = pg_execute($conn, "check_for_salesperson", [$email]);
+    return pg_num_rows($salesperson) == 1;
 }
 
 /**
@@ -147,9 +181,9 @@ function check_for_salesperson(string $email): bool
  */
 function add_salesperson(string $f_name, string $l_name, string $email, string $password)
 {
-	$password = password_hash($password, PASSWORD_BCRYPT);
-	$conn = db_connect();
-	return pg_execute($conn, "add_user", [$email, $password, $f_name, $l_name, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), true, 's']);
+    $password = password_hash($password, PASSWORD_BCRYPT);
+    $conn = db_connect();
+    return pg_execute($conn, "add_user", [$email, $password, $f_name, $l_name, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), true, 's']);
 }
 
 /**
@@ -166,8 +200,8 @@ function add_salesperson(string $f_name, string $l_name, string $email, string $
  */
 function add_client(string $f_name, string $l_name, string $email, string $phone_num, string $phone_ext, int $sales_id, string $logo_path)
 {
-	$conn = db_connect();
-	pg_execute($conn, "add_client", [$email, $sales_id, $f_name, $l_name, $phone_num, $phone_ext, $logo_path]);
+    $conn = db_connect();
+    pg_execute($conn, "add_client", [$email, $sales_id, $f_name, $l_name, $phone_num, $phone_ext, $logo_path]);
 }
 
 /**
@@ -178,8 +212,8 @@ function add_client(string $f_name, string $l_name, string $email, string $phone
  */
 function get_calls_client(int $client_id)
 {
-	$conn = db_connect();
-	return pg_execute($conn, "get_calls_client", [$client_id]);
+    $conn = db_connect();
+    return pg_execute($conn, "get_calls_client", [$client_id]);
 }
 
 /**
@@ -190,8 +224,8 @@ function get_calls_client(int $client_id)
  */
 function get_calls_salesperson(int $sales_id)
 {
-	$conn = db_connect();
-	return pg_execute($conn, "get_calls_salesperson", [$sales_id]);
+    $conn = db_connect();
+    return pg_execute($conn, "get_calls_salesperson", [$sales_id]);
 }
 
 /**
@@ -202,8 +236,8 @@ function get_calls_salesperson(int $sales_id)
  */
 function add_call(int $client_id)
 {
-	$conn = db_connect();
-	return pg_execute($conn, "add_call", [$client_id, date("Y-m-d H:i:s")]);
+    $conn = db_connect();
+    return pg_execute($conn, "add_call", [$client_id, date("Y-m-d H:i:s")]);
 }
 
 /**
@@ -213,8 +247,33 @@ function add_call(int $client_id)
  * @param int $id the id of the user being updated
  * @return void
  */
-function update_password(string $password, int $id) {
-	$password = password_hash($password, PASSWORD_BCRYPT);
-	$conn = db_connect();
-	pg_execute($conn, "update_password", [$password, $id]);
+function update_password(string $password, int $id)
+{
+    $password = password_hash($password, PASSWORD_BCRYPT);
+    $conn = db_connect();
+    pg_execute($conn, "update_password", [$password, $id]);
+}
+
+/**
+ * Activate a user account
+ *
+ * @param string $email_address the email address to activate
+ * @return void
+ */
+function activate_user(string $email_address)
+{
+    $conn = db_connect();
+    pg_execute($conn, "activate_user", [$email_address]);
+}
+
+/**
+ * Deactivate a user account
+ *
+ * @param string $email_address the email address to deactivate
+ * @return void
+ */
+function deactivate_user(string $email_address)
+{
+    $conn = db_connect();
+    pg_execute($conn, "deactivate_user", [$email_address]);
 }

@@ -141,6 +141,7 @@ if (sizeof($clients) > 0) {
 }
 
 // display calls in a paged table
+echo ("<p class='h3'>Calls</p>");
 $sales_calls = get_calls_salesperson($current_user_id);
 echo display_table([
 	[

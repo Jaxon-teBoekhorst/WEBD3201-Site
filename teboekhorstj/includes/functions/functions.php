@@ -20,8 +20,8 @@ require_once('./includes/functions/messages.php');
  */
 function redirect(string $url)
 {
-	header("Location:$url");
-	ob_flush();
+    header("Location:$url");
+    ob_flush();
 }
 
 
@@ -32,7 +32,7 @@ function redirect(string $url)
  */
 function is_logged_in(): bool
 {
-	return !$_SESSION["current_user"] == "";
+    return !$_SESSION["current_user"] == "";
 }
 
 /**
@@ -45,39 +45,45 @@ function is_logged_in(): bool
  */
 function sign_in(string $email, string $password)
 {
-	$user = user_select($email);
+    $user = user_select($email);
 
-	if (pg_num_rows($user) == 1) {
+    if (pg_num_rows($user) == 1) {
 
-		$user_email = pg_fetch_result($user, 0, "EmailAddress");
-		$user_pass = pg_fetch_result($user, 0, "Password");
+        $user_email = pg_fetch_result($user, 0, "EmailAddress");
+        $user_pass = pg_fetch_result($user, 0, "Password");
+        $enabled = pg_fetch_result($user, 0, "enabled");
 
-		if ($email == $user_email && password_verify($password, $user_pass)) {
-			$user_fname = pg_fetch_result($user, 0, "FirstName");
-			$user_lname = pg_fetch_result($user, 0, "LastName");
-			$user_type = pg_fetch_result($user, 0, "Type");
-			$user_id = pg_fetch_result($user, 0, "Id");
+        if (!$enabled) {
+            set_message("Sorry you can't currently sign-in, please talk to HR");
+            redirect("./index.php");
+        }
 
-			$_SESSION["current_user"] = $user_email;
-			$_SESSION["user_fname"] = $user_fname;
-			$_SESSION["user_lname"] = $user_lname;
-			$_SESSION["user_type"] = $user_type;
-			$_SESSION["user_id"] = $user_id;
+        if ($email == $user_email && password_verify($password, $user_pass)) {
+            $user_fname = pg_fetch_result($user, 0, "FirstName");
+            $user_lname = pg_fetch_result($user, 0, "LastName");
+            $user_type = pg_fetch_result($user, 0, "Type");
+            $user_id = pg_fetch_result($user, 0, "Id");
 
-			set_message("Welcome " . $user_fname . " " . $user_lname);
-			update_accessed($user_id);
-			log_sign_in($email, true);
-			redirect("./dashboard.php");
-		} else {
-			set_message("Incorrect email or password");
-			log_sign_in($email, false);
-			redirect("sign-in.php");
-		}
-	} else {
-		set_message("No user found");
-		log_sign_in($email, false);
-		redirect("sign-in.php");
-	}
+            $_SESSION["current_user"] = $user_email;
+            $_SESSION["user_fname"] = $user_fname;
+            $_SESSION["user_lname"] = $user_lname;
+            $_SESSION["user_type"] = $user_type;
+            $_SESSION["user_id"] = $user_id;
+
+            set_message("Welcome " . $user_fname . " " . $user_lname);
+            update_accessed($user_id);
+            log_sign_in($email, true);
+            redirect("./dashboard.php");
+        } else {
+            set_message("Incorrect email or password");
+            log_sign_in($email, false);
+            redirect("sign-in.php");
+        }
+    } else {
+        set_message("No user found");
+        log_sign_in($email, false);
+        redirect("sign-in.php");
+    }
 }
 
 /**
@@ -107,29 +113,29 @@ function sign_in(string $email, string $password)
  */
 function display_form(array $form): string
 {
-	$self = $_SERVER['PHP_SELF'];
-	$formFinal = "\n<form action='$self' method='POST' class='form-signin align-content-center' enctype='multipart/form-data'>\n";
-	if (isset($form['prepended'])) {
-		$formFinal .= $form['prepended'];
-	}
+    $self = $_SERVER['PHP_SELF'];
+    $formFinal = "\n<form action='$self' method='POST' class='form-signin align-content-center' enctype='multipart/form-data'>\n";
+    if (isset($form['prepended'])) {
+        $formFinal .= $form['prepended'];
+    }
 
-	foreach ($form as $element) {
-		$type = $element['type'] ?? "";
-		$name = $element['name'] ?? "";
-		$value = $element['value'] ?? "";
-		$label = $element['label'] ?? "";
-		$class = $element['class'] ?? "";
-		$other = $element['other'] ?? "";
+    foreach ($form as $element) {
+        $type = $element['type'] ?? "";
+        $name = $element['name'] ?? "";
+        $value = $element['value'] ?? "";
+        $label = $element['label'] ?? "";
+        $class = $element['class'] ?? "";
+        $other = $element['other'] ?? "";
 
-		if ($type != "") {
-			$formFinal .= "<input type=\"$type\" name=\"$name\" value=\"$value\" class=\"$class\" placeholder=\"$label\" $other/>\n";
-		}
-	}
-	if (isset($form['appended'])) {
-		$formFinal .= $form['appended'];
-	}
-	$formFinal .= "</form> \n";
-	return $formFinal;
+        if ($type != "") {
+            $formFinal .= "<input type=\"$type\" name=\"$name\" value=\"$value\" class=\"$class\" placeholder=\"$label\" $other/>\n";
+        }
+    }
+    if (isset($form['appended'])) {
+        $formFinal .= $form['appended'];
+    }
+    $formFinal .= "</form> \n";
+    return $formFinal;
 }
 
 /**
@@ -144,56 +150,54 @@ function display_form(array $form): string
  */
 function display_table(array $table): string
 {
-	// fetch values from array
-	$header_array = $table[0];
-	$rows = $table[1];
-	$max_results = $table[2];
-	$page = $table[3] - 1;
+    // fetch values from array
+    $header_array = $table[0];
+    $rows = $table[1];
+    $max_results = $table[2];
+    $page = $table[3] - 1;
 
-	/** String containing the final table */
-	$result = "<table class='table'>\n";
+    /** String containing the final table */
+    $result = "<table class='table'>\n";
 
-	// generate headers
-	/** array containing the table headers */
-	$headers = [];
-	foreach ($header_array as $header_key => $header_value) {
-		$headers[] = $header_key;
-		$result .= "<th>$header_value</th>";
-	}
+    // generate headers
+    /** array containing the table headers */
+    $headers = [];
+    foreach ($header_array as $header_key => $header_value) {
+        $headers[] = $header_key;
+        $result .= "<th>$header_value</th>";
+    }
 
-	/** Start point of the page loop */
-	$start = RESULTS_PER_PAGE * $page - 1;
-	/** End point of the page loop */
-	$end = $start + RESULTS_PER_PAGE;
+    /** Start point of the page loop */
+    $start = RESULTS_PER_PAGE * $page - 1;
+    /** End point of the page loop */
+    $end = $start + RESULTS_PER_PAGE;
 
-	if ($end >= $max_results) {
-		// subtract one for array offset
-		$end = $max_results - 1;
-	}
+    if ($end >= $max_results) {
+        // subtract one for array offset
+        $end = $max_results - 1;
+    }
 
-	// loop through all rows
-	for ($i = $start;
-		 $i < $end;
-		 $i++) {
-		// populate row
-		$result .= "<tr>\n";
-		foreach ($headers as $header) {
-			$row_data = pg_fetch_result($rows, $i + 1, $header);
-			// display row data
-			// if the header is an image type and row data isn't empty display it as an image
-			if (in_array($header, IMAGE_HEADERS) && $row_data != '') {
-				$result .= "<td><img class='' src='$row_data' alt='Client Logo' width='15%'></td>";
-			} else {
-				$result .= "<td>$row_data</td>";
-			}
-		}
-		$result .= "\n</tr>\n";
-	}
+    // loop through all rows
+    for ($i = $start; $i < $end; $i++) {
+        // populate row
+        $result .= "<tr>\n";
+        foreach ($headers as $header) {
+            $row_data = pg_fetch_result($rows, $i + 1, $header);
+            // display row data
+            // if the header is an image type and row data isn't empty display it as an image
+            if (in_array($header, IMAGE_HEADERS) && $row_data != '') {
+                $result .= "<td><img class='' src='$row_data' alt='Client Logo' width='15%'></td>";
+            } else {
+                $result .= "<td>$row_data</td>";
+            }
+        }
+        $result .= "\n</tr>\n";
+    }
 
-	// append table closer
-	$result .= "</table>\n";
-	// return final table
-	return $result;
+    // append table closer
+    $result .= "</table>\n";
+    // return final table
+    return $result;
 }
 
 /**
@@ -204,11 +208,11 @@ function display_table(array $table): string
  */
 function is_active_page(string $page): string
 {
-	if ($_SERVER['PHP_SELF'] === "/webd3201/teboekhorstj/$page") {
-		return 'active';
-	} else {
-		return '';
-	}
+    if ($_SERVER['PHP_SELF'] === "/webd3201/teboekhorstj/$page") {
+        return 'active';
+    } else {
+        return '';
+    }
 }
 
 /**
@@ -219,11 +223,11 @@ function is_active_page(string $page): string
  */
 function format_phone(string $number): string
 {
-	if (preg_match('/(\d{3})(\d{3})(\d{4})$/', $number, $matches)) {
-		return "($matches[1]) $matches[2]-$matches[3]";
-	} else {
-		return $number;
-	}
+    if (preg_match('/(\d{3})(\d{3})(\d{4})$/', $number, $matches)) {
+        return "($matches[1]) $matches[2]-$matches[3]";
+    } else {
+        return $number;
+    }
 }
 
 /**
@@ -236,30 +240,41 @@ function format_phone(string $number): string
  */
 function gen_rand_pass(int $length = 12): string
 {
-	// basic charsets
-	define("chars", 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-	define("spec_chars", "!@#$%^&*()_+,.<>;`~");
-	define("digits", "1234567890");
+    // basic charsets
+    define("chars", 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+    define("spec_chars", "!@#$%^&*()_+,.<>;`~");
+    define("digits", "1234567890");
 
-	// merge all basic charsets lists with reg chars upper and lower case
-	$char_set = chars . strtolower(chars) . spec_chars . digits;
+    // merge all basic charsets lists with reg chars upper and lower case
+    $char_set = chars . strtolower(chars) . spec_chars . digits;
 
-	if ($length < 1) {
-		throw new RangeException("Length must be an integer greater than 0");
-	}
-
-
-	// array of the characters to return
-	$password = [];
-	// find the length of the charset and offset to 0 start
-	$max = strlen($char_set) - 1;
+    if ($length < 1) {
+        throw new RangeException("Length must be an integer greater than 0");
+    }
 
 
-	for ($i = 0; $i < $length; $i++) {
-		// append random char to password
-		$password [] = $char_set[random_int(0, $max)];
-	}
+    // array of the characters to return
+    $password = [];
+    // find the length of the charset and offset to 0 start
+    $max = strlen($char_set) - 1;
 
-	// return the final password
-	return implode('', $password);
+
+    for ($i = 0; $i < $length; $i++) {
+        // append random char to password
+        $password [] = $char_set[random_int(0, $max)];
+    }
+
+    // return the final password
+    return implode('', $password);
+}
+
+/**
+ * Print a value then stop processing the page
+ *
+ * @param $value _ the value to be dumped (can be anything)
+ * @return void
+ */
+function _dd($value) {
+    var_dump($value);
+    die();
 }
