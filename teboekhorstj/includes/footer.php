@@ -12,7 +12,12 @@
 
 </div>
 <footer>
-    <p class="mt-5 mb-3 text-muted text-center">&copy; <?php echo date("Y"); ?></p>
+    <div class="d-flex justify-content-center mt-5">
+        <a href="./aup.php" class="text-muted page-link">Accepted Usage</a>
+        <a href="./cookie_policy.php" class="text-muted page-link">Cookie Policy</a>
+        <a href="./privacy_policy.php" class="text-muted page-link">Privacy Policy</a>
+    </div>
+    <p class="mb-3 text-muted text-center"> &copy; <?php echo date("Y"); ?> - Jaxon teBoekhorst</p>
 </footer>
 </main>
 </div>
